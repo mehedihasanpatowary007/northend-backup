@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="category_company_rule" model="ir.rule">
+        <field name="name">Marked Out categories: allowed companies</field>
+        <field name="model_id" ref="model_pos_markout_category"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])] if (user.has_group('base.group_system') or user.pos_markout_can_manage_categories) else [('id', 'in', user.pos_markout_allowed_category_ids.ids), ('company_id', 'in', company_ids + [False])]</field>
+    </record>
+    <record id="benefit_rule_company_rule" model="ir.rule">
+        <field name="name">Marked Out benefit rules: allowed companies</field>
+        <field name="model_id" ref="model_pos_benefit_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])] if (user.has_group('base.group_system') or user.pos_markout_can_manage_categories) else [('id', '=', 0)]</field>
+    </record>
+    <record id="markout_company_view_rule" model="ir.rule">
+        <field name="name">Marked Out records: explicit user visibility</field>
+        <field name="model_id" ref="model_pos_markout"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if (user.has_group('base.group_system') or user.pos_markout_can_view or user.pos_markout_can_view_reports) else [('id', '=', 0)]</field>
+    </record>
+    <record id="markout_line_company_view_rule" model="ir.rule">
+        <field name="name">Marked Out lines: explicit user visibility</field>
+        <field name="model_id" ref="model_pos_markout_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if (user.has_group('base.group_system') or user.pos_markout_can_view or user.pos_markout_can_view_reports) else [('id', '=', 0)]</field>
+    </record>
+    <record id="markout_benefit_usage_company_view_rule" model="ir.rule">
+        <field name="name">Marked Out benefit usage: explicit user visibility</field>
+        <field name="model_id" ref="model_pos_markout_benefit_usage"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if (user.has_group('base.group_system') or user.pos_markout_can_view or user.pos_markout_can_view_reports) else [('id', '=', 0)]</field>
+    </record>
+</odoo>

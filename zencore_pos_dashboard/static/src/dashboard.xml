@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+<t t-name="zencore_pos_dashboard.PosSalesDashboard">
+  <div t-att-class="'psd-root' + (state.loading ? ' is-loading' : '')">
+    <div class="psd-shell">
+      <header class="topbar">
+        <div class="title-block">
+          <h1>Sales Performance Overview</h1>
+          <p>All outlets · <t t-esc="dateLabel"/> · compare with previous period</p>
+        </div>
+        <div class="top-actions">
+          <span class="live-pill"><i/> Live</span>
+          <button class="top-btn" t-on-click="exportCsv">Export</button>
+
+
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="filter-panel panel">
+          <div class="filter-grid">
+            <label>Date range<select t-model="state.period" t-on-change="onPeriod"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">Last 7 days</option><option value="month">This month</option><option value="lastmonth">Last month</option><option value="quarter">This quarter</option><option value="year">This year</option><option value="custom">Custom range</option></select></label>
+            <label>Compare with<select t-model="state.compare"><option value="previous">Previous period</option><option value="none">No comparison</option></select></label>
+            <label>Outlet<select t-model="state.register" t-on-change="onRegister"><option value="">All outlets <t t-if="outlets.length"> · <t t-esc="outlets.length"/></t></option><t t-foreach="outlets" t-as="outlet" t-key="outlet"><option t-att-value="outlet"><t t-esc="outlet"/></option></t></select></label>
+            <label>Sales officer<select t-model="state.employee" t-on-change="onEmployee"><option value="">All officers <t t-if="employees.length"> · <t t-esc="employees.length"/></t></option><t t-foreach="employees" t-as="employee" t-key="employee"><option t-att-value="employee"><t t-esc="employee"/></option></t></select></label>
+            <label>Product category<select t-model="state.category" t-on-change="onCategory"><option value="">All categories</option><t t-foreach="categories" t-as="category" t-key="category"><option t-att-value="category"><t t-esc="category"/></option></t></select></label>
+            <label>Payment method<select t-model="state.payment" t-on-change="onPayment"><option value="">All methods</option><t t-foreach="payments" t-as="payment" t-key="payment"><option t-att-value="payment"><t t-esc="payment"/></option></t></select></label>
+            <button class="filter-btn reset" t-on-click="reset">Reset</button><button class="filter-btn apply" t-on-click="apply">Apply</button>
+          </div>
+          <div class="filter-footer">
+            <div class="quick"><span>Quick:</span><button t-att-class="state.period === 'today' ? 'selected' : ''" data-period="today" t-on-click="setQuick">Today</button><button t-att-class="state.period === 'yesterday' ? 'selected' : ''" data-period="yesterday" t-on-click="setQuick">Yesterday</button><button t-att-class="state.period === 'week' ? 'selected' : ''" data-period="week" t-on-click="setQuick">Last 7 days</button><button t-att-class="state.period === 'month' ? 'selected' : ''" data-period="month" t-on-click="setQuick">This month</button><button t-att-class="state.period === 'lastmonth' ? 'selected' : ''" data-period="lastmonth" t-on-click="setQuick">Last month</button><button t-att-class="state.period === 'quarter' ? 'selected' : ''" data-period="quarter" t-on-click="setQuick">This quarter</button><button t-att-class="state.period === 'custom' ? 'selected' : ''" data-period="custom" t-on-click="setQuick">Custom...</button></div>
+            <div class="active-filters"><span>Active filters:</span><b t-if="state.register">Outlet: <t t-esc="state.register"/> ×</b><b t-if="state.employee">Officer: <t t-esc="state.employee"/> ×</b><b t-if="!state.register">Outlet: All ×</b><b>Shift: All ×</b></div>
+          </div>
+          <div class="custom-dates" t-if="state.period === 'custom'"><label>From<input type="date" t-model="state.dateFrom"/></label><label>To<input type="date" t-model="state.dateTo"/></label></div>
+        </section>
+
+        <section class="kpi-grid">
+          <t t-foreach="cards" t-as="card" t-key="card.key">
+            <article class="kpi-card panel"><div class="kpi-label"><span><t t-esc="card.label"/></span></div><div class="kpi-value"><t t-esc="cardValue(card)"/></div><div class="kpi-change"><b t-att-class="card.key === 'discount' || card.key === 'refund' ? growth(card.value, card.previous, true).cls : growth(card.value, card.previous).cls"><t t-esc="growth(card.value, card.previous, card.inverse).arrow"/> <t t-esc="growth(card.value, card.previous, card.inverse).text"/></b><span>vs prev.</span></div><svg class="sparkline" viewBox="0 0 140 46" preserveAspectRatio="none"><path t-att-d="card.trend" t-att-class="card.key === 'discount' ? 'spark negative' : 'spark'"/></svg></article>
+          </t>
+        </section>
+
+        <section class="content-grid trend-row">
+          <article class="panel trend-panel"><div class="panel-heading"><div><h2>Sales Trend</h2><p>Net sales per day vs previous period</p></div><div class="segmented"><button t-att-class="state.gran === 'day' ? 'active' : ''" data-gran="day" t-on-click="setGran">Day</button><button t-att-class="state.gran === 'week' ? 'active' : ''" data-gran="week" t-on-click="setGran">Week</button><button t-att-class="state.gran === 'month' ? 'active' : ''" data-gran="month" t-on-click="setGran">Month</button></div></div><div class="chart-legend"><span><i class="legend-dot current"/>This period</span><span><i class="legend-line"/>Comparison</span><strong>Total <t t-esc="thousand(trend.total)"/> · Peak: <t t-esc="trend.peak"/></strong></div><div class="trend-chart"><svg viewBox="0 0 800 260" preserveAspectRatio="none"><line x1="50" x2="760" y1="36" y2="36"/><line x1="50" x2="760" y1="100" y2="100"/><line x1="50" x2="760" y1="164" y2="164"/><line x1="50" x2="760" y1="226" y2="226"/><path class="trend-area" t-att-d="trend.current + ' L760 226 L50 226 Z'"/><path class="trend-previous" t-att-d="trend.previous"/><path class="trend-current" t-att-d="trend.current"/><rect x="0" y="0" width="800" height="260" class="chart-hit" t-on-mousemove="onTrendMove" t-on-mouseleave="onTrendLeave"/><t t-if="trend.labels.length"><text x="50" y="247"><t t-esc="trend.labels[0]"/></text><text x="710" y="247"><t t-esc="trend.labels[trend.labels.length - 1]"/></text></t></svg></div></article>
+          <article class="panel outlet-panel"><div class="panel-heading"><div><h2>Sales by Outlet</h2><p>Share of net sales</p></div><button class="view-link">View all →</button></div><div class="donut-layout"><div class="donut large" t-att-style="'background:conic-gradient(' + outletGradient + ')' "><div><strong><t t-esc="thousand(current.net)"/></strong><span>Net sales</span></div></div><div class="legend-list"><t t-foreach="outletRows" t-as="row" t-key="row.name"><div><span><i t-att-style="'background:' + row.color"/><t t-esc="row.name"/></span><b><t t-esc="row.share.toFixed(0)"/>%</b></div></t></div></div><div class="outlet-values"><t t-foreach="outletRows" t-as="row" t-key="row.name"><div><span><t t-esc="row.name"/></span><b><t t-esc="thousand(row.value)"/></b></div></t></div></article>
+        </section>
+
+        <section class="content-grid three-panels">
+          <article class="panel chart-panel"><div class="panel-heading"><div><h2>Orders by Hour</h2><p>Average orders per hour of the day</p></div><strong>Orders / day</strong></div><div class="chart-legend"><span><i class="legend-dot peak"/>Peak hours</span><span><i class="legend-dot normal"/>Normal</span></div><div class="hour-chart"><t t-foreach="hourRows" t-as="row" t-key="row.hour"><div t-att-class="row.peak ? 'hour-bar peak' : 'hour-bar normal'" t-att-style="'height:' + row.height + '%'" t-att-title="row.hour + ':00 · ' + row.count + ' orders'"/></t></div><div class="axis"><t t-foreach="hourRows" t-as="row" t-key="row.hour"><span t-if="row.hour % 2 === 0"><t t-esc="row.hour > 12 ? row.hour - 12 : row.hour"/><t t-esc="row.hour >= 12 ? 'p' : 'a'"/></span></t></div></article>
+          <article class="panel chart-panel payment-panel"><div class="panel-heading"><div><h2>Payment Method Mix</h2><p>Share of transactions</p></div></div><div class="donut-wrap"><div class="donut" t-att-style="'background:conic-gradient(' + paymentGradient + ')' "><div><strong><t t-esc="current.orders.toLocaleString('en-US')"/></strong><span>Transactions</span></div></div></div><div class="payment-legend"><t t-foreach="paymentRows" t-as="row" t-key="row.name"><div><span><i t-att-style="'background:' + row.color"/><t t-esc="row.name"/></span><b><t t-esc="row.share.toFixed(0)"/>%</b></div></t></div></article>
+          <article class="panel chart-panel category-panel"><div class="panel-heading"><div><h2>Sales by Category</h2><p>Net sales per product category</p></div></div><div class="category-list"><t t-foreach="categoryRows" t-as="row" t-key="row.name"><div class="category-row"><div><span><t t-esc="row.name"/></span><b><t t-esc="thousand(row.value)"/></b></div><div class="category-track"><i t-att-style="'width:' + row.share + '%;background:' + row.color"/></div></div></t></div></article>
+        </section>
+
+        <section class="content-grid lower-row">
+          <article class="panel table-panel leaderboard"><div class="panel-heading"><div><h2>Sales Officer Leaderboard</h2><p>Ranked by net sales · target achievement</p></div><button class="view-link">View all <t t-esc="employees.length"/> →</button></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Sales officer</th><th>Sales</th><th>Orders</th><th>Avg. basket</th><th>Target</th></tr></thead><tbody><t t-foreach="employeeRows" t-as="row" t-key="row.name"><tr><td><span class="rank"><t t-esc="row.rank"/></span></td><td><span t-att-class="'person-avatar avatar-' + (row.rank % 5)"><t t-esc="row.initials"/></span><strong><t t-esc="row.name"/></strong><small><t t-esc="row.register || ''"/></small></td><td><t t-esc="thousand(row.value)"/></td><td><t t-esc="row.count"/></td><td><t t-esc="thousand(row.value / row.count)"/></td><td><div class="target-cell"><div class="target-track"><i t-att-style="'width:' + Math.min(100, row.achievement) + '%'" t-att-class="row.achievement >= 100 ? 'on-target' : row.achievement >= 90 ? 'near-target' : 'below-target'"/></div><b><t t-esc="row.target ? row.achievement.toFixed(0) + '%' : 'Not set'"/></b></div></td></tr></t></tbody></table></div></article>
+          <article class="panel table-panel products"><div class="panel-heading"><div><h2>Top Selling Products</h2><p>By quantity sold</p></div><button class="view-link">View all →</button></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Sales</th><th>Trend</th></tr></thead><tbody><t t-foreach="productRows" t-as="row" t-key="row.name"><tr><td><span class="product-thumb"><t t-if="row.image"><img t-att-src="row.image"/></t></span><strong><t t-esc="row.name"/></strong><small><t t-esc="row.category"/></small></td><td><t t-esc="row.qty"/></td><td><t t-esc="thousand(row.value)"/></td><td><span t-att-class="row.growth.cls"><t t-esc="row.growth.arrow"/> <t t-esc="row.growth.text"/></span></td></tr></t></tbody></table></div></article>
+        </section>
+
+        <section class="content-grid bottom-row">
+          <article class="panel target-panel"><div class="panel-heading"><div><h2>Outlet Target vs Actual</h2><p>Net sales against monthly target (pro-rated)</p></div><strong>Tk in Thousand</strong></div><div class="target-chart"><t t-foreach="targetRows" t-as="row" t-key="row.name"><div class="target-group"><div class="target-bars"><i class="actual" t-att-style="'height:' + (row.target ? Math.min(100, row.value / row.target * 100) : 0) + '%'"/><i class="target" style="height:100%"/></div><div class="target-name"><t t-esc="row.name"/></div><b t-att-class="row.attainment >= 100 ? 'on-target' : 'below-target'"><t t-esc="row.target ? row.attainment.toFixed(0) + '% of target' : 'Target not set'"/></b></div></t></div></article>
+          <article class="panel heat-panel"><div class="panel-heading"><div><h2>Busy Hours Heatmap</h2><p>Order volume by weekday and hour</p></div></div><div class="heatmap"><div class="heat-hours"><span/><t t-foreach="[8,10,12,14,16,18,20,22]" t-as="hour" t-key="hour"><span><t t-esc="hour &gt; 12 ? hour - 12 : hour"/><t t-esc="hour &gt;= 12 ? 'p' : 'a'"/></span></t></div><t t-foreach="heatRows" t-as="row" t-key="row.name"><div class="heat-row"><span><t t-esc="row.name"/></span><t t-foreach="row.cells" t-as="cell" t-key="cell.hour"><i t-att-style="'background:' + heatColor(cell.level)" t-att-title="cell.value + ' orders'"/></t></div></t><div class="heat-scale"><span>Low</span><i/><span>High</span></div></div></article>
+        </section>
+        <footer>Synced with POS · Last update <t t-esc="syncTime"/> · Currency: BDT (Tk), K = Thousand.</footer>
+      </main>
+    </div>
+    <div class="dashboard-tip" t-if="state.tip" t-att-style="'left:' + state.tip.left + 'px;top:' + state.tip.top + 'px'"><b><t t-esc="state.tip.label"/></b><br/>This period   <t t-esc="state.tip.current"/><br/>Comparison   <t t-esc="state.tip.previous"/></div>
+  </div>
+</t>
+</templates>

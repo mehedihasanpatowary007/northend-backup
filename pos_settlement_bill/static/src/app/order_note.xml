@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="pos_settlement_bill.OrderNoteButton">
+        <button type="button" t-attf-class="{{props.class}} flex-shrink-0 pos-order-note-button"
+                t-att-class="{'has-order-note': !!currentNote, 'is-icon-only': props.iconOnly}"
+                t-att-disabled="!canEditOrderNote" t-on-click="onClick"
+                t-att-data-hotkey="canEditOrderNote and this.pos.router.state.current === 'ProductScreen' ? 'n' : undefined"
+                aria-keyshortcuts="Alt+N"
+                title="Order Note" aria-label="Order Note">
+            <i class="fa fa-sticky-note-o" aria-hidden="true"/>
+            <span t-if="!props.iconOnly">Order Note</span>
+        </button>
+    </t>
+
+    <t t-name="pos_settlement_bill.ControlButtonsLayout" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//InternalNoteButton" position="attributes">
+            <attribute name="t-if" add="!props.showRemainingButtons" separator=" and "/>
+        </xpath>
+        <xpath expr="//NoteButton" position="attributes">
+            <attribute name="iconOnly">false</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('control-buttons-modal')]/*[1]" position="before">
+            <button t-if="!this.isMarkoutOrder" type="button" t-att-class="buttonClass"
+                    t-att-data-hotkey="this.pos.router.state.current === 'ProductScreen' ? 'c' : undefined"
+                    aria-keyshortcuts="Alt+C"
+                    title="Customer" t-on-click="() => this.pos.selectPartner()">
+                <i class="fa fa-user me-1" aria-hidden="true"/>Customer
+            </button>
+        </xpath>
+    </t>
+
+    <t t-name="pos_settlement_bill.CustomerIcon" t-inherit="point_of_sale.SelectPartnerButton" t-inherit-mode="extension">
+        <xpath expr="//button" position="replace">
+            <button type="button" class="set-partner btn btn-secondary pos-customer-icon"
+                    t-att-class="{'has-selected-customer': !!props.partner}"
+                    t-att-data-hotkey="this.pos.router.state.current === 'ProductScreen' ? 'c' : undefined"
+                    aria-keyshortcuts="Alt+C"
+                    t-attf-title="Customer{{props.partner ? ': ' + props.partner.name : ''}}"
+                    t-attf-aria-label="Customer{{props.partner ? ': ' + props.partner.name : ''}}"
+                    t-on-click="() => this.pos.selectPartner()">
+                <i class="fa fa-user" aria-hidden="true"/>
+            </button>
+        </xpath>
+    </t>
+
+    <t t-name="pos_settlement_bill.OrderNotePopup">
+        <Dialog size="'md'" title="props.title">
+            <textarea rows="4" class="form-control form-control-lg" t-model="state.inputValue"
+                      t-ref="input" t-att-placeholder="props.placeholder" aria-label="Order note"/>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-on-click="confirm">Save</button>
+                <button class="btn btn-secondary btn-lg" t-on-click="close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="pos_settlement_bill.OrderDisplayNote" t-inherit="point_of_sale.OrderDisplay" t-inherit-mode="extension">
+        <xpath expr="//div[@t-if='order.general_customer_note']" position="replace">
+            <div t-if="order.general_customer_note" class="pos-order-note">
+                <strong class="pos-order-note-title">Order Note</strong>
+                <div class="pos-order-note-text" t-esc="order.general_customer_note"/>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="pos_settlement_bill.TicketScreenOrderNote" t-inherit="point_of_sale.TicketScreen" t-inherit-mode="extension">
+        <xpath expr="//tr[hasclass('order-row')]/td[hasclass('order-name')]" position="after">
+            <td class="pos-ticket-order-note align-middle" aria-label="Order Note">
+                <div class="pos-ticket-order-note-label">Order Note</div>
+                <div t-if="order.general_customer_note" class="pos-ticket-order-note-text"
+                     t-att-title="order.general_customer_note" t-esc="order.general_customer_note"/>
+                <span t-else="" class="text-muted">—</span>
+            </td>
+        </xpath>
+        <xpath expr="//div[hasclass('mobileOrderList')]/div[hasclass('order-name')]" position="inside">
+            <div t-if="order.general_customer_note" class="pos-ticket-order-note-mobile"
+                 t-att-title="order.general_customer_note">
+                <span class="pos-ticket-order-note-label">Order Note</span>
+                <div class="pos-ticket-order-note-text" t-esc="order.general_customer_note"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

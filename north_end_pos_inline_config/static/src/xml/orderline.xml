@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="north_end_pos_inline_config.OrderSummary" t-inherit="point_of_sale.OrderSummary" t-inherit-mode="extension">
+        <xpath expr="//Orderline" position="attributes">
+            <attribute name="neGrouped">true</attribute>
+        </xpath>
+    </t>
+    <t t-name="north_end_pos_inline_config.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//Orderline" position="attributes">
+            <attribute name="neGrouped">true</attribute>
+        </xpath>
+    </t>
+    <t t-name="north_end_pos_inline_config.Orderline" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">
+        <xpath expr="//li[@t-ref='root']" position="attributes">
+            <attribute name="t-if">line.order_id and !(props.neGrouped and line.neGetParent())</attribute>
+        </xpath>
+        <xpath expr="//ul[hasclass('info-list')]" position="inside">
+            <li t-if="line.ne_parent_label and !(props.neGrouped and line.neGetParent())" class="small text-muted">
+                Add-on for: <t t-esc="line.ne_parent_label"/>
+            </li>
+            <t t-if="props.neGrouped and line.neGetAddons().length">
+                <li t-foreach="line.neGetAddons()" t-as="addon" t-key="addon.uuid" class="ne-addon-breakdown">
+                    <div class="d-flex justify-content-between gap-2">
+                        <span>+ <t t-esc="addon.full_product_name"/> × <t t-esc="addon.qty"/></span>
+                        <span t-if="!props.basic_receipt" class="text-nowrap" t-esc="neAmount(addon.displayPrice)"/>
+                        <span t-if="props.showTaxGroup" t-esc="addon.taxGroupLabels"/>
+                    </div>
+                    <small t-if="addon.discount and !props.basic_receipt" class="text-muted">
+                        Discount: <t t-esc="addon.discount"/>%
+                    </small>
+                    <small t-if="addon.fixedDiscountAmount and !props.basic_receipt" class="d-block text-muted">
+                        Fixed discount: <t t-esc="addon.fixedDiscountAmount"/>
+                    </small>
+                    <small t-if="addon.customer_note" class="d-block" t-esc="addon.customer_note"/>
+                    <small t-foreach="addon.packLotLines || []" t-as="lot" t-key="lot_index" class="d-block" t-esc="lot"/>
+                </li>
+                <li t-if="!props.basic_receipt" class="ne-group-total d-flex justify-content-between fw-bold border-top pt-1 mt-1">
+                    <span>Line total</span><span t-esc="neAmount(line.neGroupTotal())"/>
+                </li>
+            </t>
+        </xpath>
+    </t>
+</templates>

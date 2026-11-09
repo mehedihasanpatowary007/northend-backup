@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="pos_settlement_bill.SettlementReceipt">
+        <div class="pos-receipt settlement-receipt">
+            <header class="settlement-receipt-header">
+                <img t-if="props.data.logoUrl" t-att-src="props.data.logoUrl" class="settlement-receipt-logo" alt="Company logo"/>
+                <h1 t-esc="props.data.companyName"/>
+                <div t-foreach="props.data.address" t-as="addressLine" t-key="addressLine_index" t-esc="addressLine"/>
+                <div t-if="props.data.phone">Tel: <t t-esc="props.data.phone"/></div>
+                <div t-if="props.data.email" t-esc="props.data.email"/>
+                <div t-if="props.data.website" t-esc="props.data.website"/>
+                <div t-if="props.data.taxId">Tax ID: <t t-esc="props.data.taxId"/></div>
+                <div t-if="props.data.receiptHeader" class="settlement-receipt-message" t-esc="props.data.receiptHeader"/>
+            </header>
+
+            <div class="settlement-receipt-heading">
+                <h2>SETTLEMENT BILL</h2>
+                <span>Payment pending</span>
+            </div>
+
+            <section class="settlement-receipt-details">
+                <div><span>Order</span><strong t-esc="props.data.orderReference"/></div>
+                <div t-if="props.data.orderedAt"><span>Date</span><span t-esc="props.data.orderedAt"/></div>
+                <div t-if="props.data.table"><span>Table</span><strong><t t-esc="props.data.table"/><t t-if="props.data.floor"> · <t t-esc="props.data.floor"/></t></strong></div>
+                <div t-if="props.data.guests"><span>Guests</span><span t-esc="props.data.guests"/></div>
+                <div t-if="props.data.orderLabel"><span>Order name</span><span t-esc="props.data.orderLabel"/></div>
+                <div t-if="props.data.customer"><span>Customer</span><span t-esc="props.data.customer"/></div>
+                <div t-if="props.data.cashier"><span>Served by</span><span t-esc="props.data.cashier"/></div>
+            </section>
+
+            <table class="settlement-receipt-items">
+                <colgroup><col class="settlement-qty-column"/><col class="settlement-unit-column"/><col class="settlement-amount-column"/></colgroup>
+                <thead><tr><th>Qty</th><th>Unit price</th><th>Amount</th></tr></thead>
+                <tbody>
+                    <t t-foreach="props.data.lines" t-as="line" t-key="line.key">
+                        <tr class="settlement-receipt-item-name" t-att-class="{'is-combo-child': line.isComboChild}">
+                            <td colspan="3"><span t-esc="line.name"/></td>
+                        </tr>
+                        <tr class="settlement-receipt-item-price" t-att-class="{'is-combo-child': line.isComboChild}">
+                            <td t-esc="line.quantity"/><td t-esc="line.unitPrice"/><td t-esc="line.amount"/>
+                        </tr>
+                        <tr t-if="line.discounts.length or line.customerNote" class="settlement-receipt-item-note">
+                            <td colspan="3">
+                                <div t-foreach="line.discounts" t-as="discount" t-key="discount_index" t-esc="discount"/>
+                                <div t-if="line.customerNote" t-esc="line.customerNote"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            <p class="settlement-receipt-price-note" t-esc="props.data.itemPriceLabel"/>
+
+            <section t-if="props.data.globalDiscount" class="settlement-receipt-discount">
+                <div><span>Items total (tax included)</span><span t-esc="props.data.itemsBeforeGlobal"/></div>
+                <div><span t-esc="props.data.globalDiscountLabel"/><strong t-esc="props.data.globalDiscount"/></div>
+            </section>
+
+            <section class="settlement-receipt-totals">
+                <div><span><t t-if="props.data.globalDiscount">Subtotal after discounts</t><t t-else="">Subtotal</t></span><span t-esc="props.data.subtotal"/></div>
+                <div t-foreach="props.data.taxRows" t-as="tax" t-key="tax.key">
+                    <span><t t-esc="tax.name"/><small t-if="tax.base"> on <t t-esc="tax.base"/></small></span><span t-esc="tax.amount"/>
+                </div>
+                <div t-if="props.data.rounding"><span>Rounding</span><span t-esc="props.data.rounding"/></div>
+                <div class="settlement-receipt-grand-total"><strong>AMOUNT DUE</strong><strong t-esc="props.data.amountDue"/></div>
+            </section>
+
+            <p t-if="props.data.cashRoundingNote" class="settlement-receipt-small">Cash rounding is applied when payment is taken.</p>
+            <section t-if="props.data.customerNote" class="settlement-receipt-customer-note">
+                <strong class="pos-order-note-title">Order Note</strong>
+                <div class="pos-order-note-text" t-esc="props.data.customerNote"/>
+            </section>
+
+            <footer class="settlement-receipt-footer">
+                <strong>Thank you for dining with us.</strong>
+                <div>Please present this bill for payment.</div>
+                <div t-if="props.data.receiptFooter" class="settlement-receipt-message" t-esc="props.data.receiptFooter"/>
+                <div class="settlement-receipt-print-info">
+                    <div t-esc="props.data.registerName"/>
+                    <div>Printed: <t t-esc="props.data.printedAt"/></div>
+                    <div t-if="props.data.authorizedBy">Printed by: <t t-esc="props.data.authorizedBy"/></div>
+                </div>
+            </footer>
+        </div>
+    </t>
+</templates>

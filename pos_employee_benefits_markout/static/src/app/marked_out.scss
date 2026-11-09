@@ -1,0 +1,293 @@
+.markout-screen {
+    --markout-accent: var(--primary, var(--bs-primary, #{$o-brand-primary}));
+    --markout-surface: var(--bs-body-bg, #fff);
+    --markout-soft: var(--bs-tertiary-bg, #f8f9fa);
+    --markout-border: var(--bs-border-color, #dee2e6);
+    --markout-muted: var(--bs-secondary-color, #6c757d);
+    min-height: 0;
+    color: var(--bs-body-color, #212529);
+    background: var(--markout-soft);
+
+    .markout-header {
+        flex: 0 0 auto;
+        border-bottom: 1px solid var(--markout-border);
+        background: var(--markout-surface);
+    }
+
+    .markout-header-inner,
+    .markout-workspace {
+        width: 100%;
+        max-width: 1424px;
+        margin: 0 auto;
+        padding: 24px 32px;
+    }
+
+    .markout-header-inner,
+    .markout-title-wrap,
+    .markout-back,
+    .markout-employee-heading-row,
+    .markout-search,
+    .markout-employee-identity {
+        display: flex;
+        align-items: center;
+    }
+
+    .markout-header-inner,
+    .markout-employee-heading-row {
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .markout-title-wrap { gap: 14px; }
+
+    .markout-title-icon,
+    .markout-category-icon,
+    .markout-empty-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--markout-accent);
+        background: var(--markout-soft);
+        border-radius: 12px;
+    }
+
+    .markout-title-icon { width: 48px; height: 48px; font-size: 24px; }
+    .markout-title { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+    .markout-subtitle { margin: 4px 0 0; color: var(--markout-muted); font-size: 13px; }
+
+    .markout-back {
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 14px;
+        border: 1px solid var(--markout-border);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        background: var(--markout-surface);
+        &:hover:not(:disabled) { background: var(--markout-soft); }
+    }
+
+    .markout-content { min-height: 0; }
+    .markout-workspace { display: flex; flex-direction: column; gap: 24px; }
+
+    .markout-category-panel,
+    .markout-employee-panel {
+        background: var(--markout-surface);
+        border: 1px solid var(--markout-border);
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+    }
+
+    .markout-category-panel { padding: 22px 24px; }
+    .markout-section-label { margin: 0 0 12px; color: var(--markout-muted); font-size: 12px; font-weight: 600; }
+    .markout-parent-tabs { display: flex; gap: 12px; }
+
+    .markout-parent-tab {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 68px;
+        padding: 12px 16px;
+        border: 1px solid var(--markout-border);
+        border-radius: 10px;
+        text-align: left;
+        font-weight: 600;
+        background: var(--markout-surface);
+        transition: border-color 120ms ease, background-color 120ms ease;
+        &:hover:not(:disabled):not(.is-active) { border-color: var(--markout-accent); background: var(--markout-soft); }
+        &.is-active { color: #fff; border-color: var(--markout-accent); background: var(--markout-accent); }
+        &.is-active .markout-category-icon { color: inherit; background: rgba(255, 255, 255, 0.14); }
+        &.is-active .markout-category-check { visibility: visible; }
+    }
+
+    .markout-category-icon { width: 38px; height: 38px; border-radius: 9px; font-size: 18px; }
+    .markout-category-name { flex: 1; line-height: 1.4; overflow-wrap: anywhere; }
+    .markout-category-check { visibility: hidden; font-size: 16px; }
+    .markout-reason-row { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--markout-border); }
+    .markout-subcategories { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .markout-subcategory {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 46px;
+        padding: 10px 18px;
+        border: 1px solid var(--markout-border);
+        border-radius: 8px;
+        font-size: 14px;
+        text-align: left;
+        background: var(--markout-surface);
+        &:hover:not(:disabled) { border-color: var(--markout-accent); }
+        &.is-active { color: var(--markout-accent); border-color: var(--markout-accent); background: var(--markout-soft); font-weight: 600; }
+    }
+
+    .markout-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 18px;
+        color: var(--bs-danger-text-emphasis, #842029);
+        border: 1px solid var(--bs-danger-border-subtle, #f5c2c7);
+        border-radius: 10px;
+        background: var(--bs-danger-bg-subtle, #f8d7da);
+        .fa { margin-top: 3px; }
+    }
+
+    .markout-initial-state,
+    .markout-empty-row td {
+        padding: 48px 24px;
+        text-align: center;
+        h2, h3 { margin: 16px 0 8px; font-size: 17px; font-weight: 600; }
+        p { margin: 0; color: var(--markout-muted); font-size: 14px; }
+    }
+
+    .markout-empty-icon { width: 52px; height: 52px; border: 1px solid var(--markout-border); font-size: 22px; }
+    .markout-employee-panel { overflow: hidden; }
+    .markout-employee-panel-top { padding: 24px 24px 0; }
+    .markout-employee-heading-row { margin-bottom: 22px; }
+    .markout-employee-heading-row h2 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: -0.3px; }
+    .markout-employee-heading-row p { margin: 6px 0 0; font-size: 13px; color: var(--markout-muted); }
+
+    .markout-current-reason {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 45%;
+        padding: 8px 12px;
+        color: var(--markout-accent);
+        border: 1px solid var(--markout-border);
+        border-radius: 6px;
+        font-size: 12px;
+        background: var(--markout-soft);
+        .fa { flex-shrink: 0; }
+    }
+
+    .markout-search {
+        gap: 12px;
+        padding: 5px 6px 5px 16px;
+        border: 1px solid var(--markout-border);
+        border-radius: 9px;
+        &:focus-within { border-color: var(--markout-accent); box-shadow: 0 0 0 1px var(--markout-accent); }
+    }
+
+    .markout-search-icon { color: var(--markout-muted); }
+    .markout-search-input {
+        flex: 1;
+        min-width: 0;
+        min-height: 44px;
+        padding: 8px 0;
+        color: inherit;
+        border: 0;
+        background: transparent;
+        outline: none;
+        font-size: 15px;
+        &::placeholder { color: var(--markout-muted); }
+    }
+
+    .markout-search-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 90px;
+        min-height: 44px;
+        padding: 10px 16px;
+        color: #fff;
+        border: 1px solid var(--markout-accent);
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        background: var(--markout-accent);
+        &:hover:not(:disabled) { color: #fff; filter: brightness(0.95); }
+    }
+
+    .markout-results-meta { padding: 16px 0 12px; color: var(--markout-muted); font-size: 12px; }
+    .markout-results-meta strong { color: var(--bs-body-color, #212529); font-weight: 600; }
+    .markout-table-wrap { overflow-x: auto; }
+    .markout-employees {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        th, td { padding: 16px 24px; text-align: left; vertical-align: middle; }
+        th { padding-top: 12px; padding-bottom: 12px; color: var(--markout-muted); background: var(--markout-soft); border-top: 1px solid var(--markout-border); border-bottom: 1px solid var(--markout-border); font-size: 12px; font-weight: 600; }
+        td { border-bottom: 1px solid var(--markout-border); }
+        tbody tr:last-child td { border-bottom: 0; }
+        tbody tr:not(.markout-empty-row) { cursor: pointer; }
+        tbody tr:not(.is-busy):not(.markout-empty-row):hover,
+        tbody tr:focus-within,
+        tbody tr.is-selected { background: var(--markout-soft); }
+        tbody tr.is-selected td:first-child { box-shadow: inset 3px 0 var(--markout-accent); }
+        tbody tr.is-busy { cursor: wait; }
+        tbody tr.is-busy:not(.is-selected) { opacity: 0.6; }
+    }
+
+    .markout-employee-identity { gap: 12px; }
+    .markout-avatar { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 42px; height: 42px; color: var(--markout-accent); background: var(--markout-soft); border: 1px solid var(--markout-border); border-radius: 50%; font-size: 13px; font-weight: 600; }
+    .markout-employee-name { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; min-height: 44px; padding: 4px 0; border: 0; text-align: left; color: inherit; font-size: 14px; font-weight: 600; }
+    .markout-employee-name:disabled { opacity: 1; }
+    .markout-opening-label { margin-top: 4px; color: var(--markout-accent); font-size: 12px; font-weight: 400; }
+    .markout-badge { display: inline-block; padding: 5px 8px; border: 1px solid var(--markout-border); border-radius: 5px; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .markout-cell-muted, .markout-location { color: var(--markout-muted); font-size: 12px; }
+    .markout-department, .markout-location { display: block; }
+    .markout-location { margin-top: 5px; .fa { margin-right: 5px; } }
+    .markout-contact-linked, .markout-contact-missing { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+    .markout-contact-linked { color: var(--markout-muted); }
+    .markout-contact-missing { color: var(--bs-warning-text-emphasis, #664d03); }
+    .markout-employees .markout-row-action { width: 48px; padding-left: 0; color: var(--markout-accent); text-align: right; }
+    .markout-mobile-label { display: none; }
+    .btn:focus-visible { outline: 2px solid var(--markout-accent); outline-offset: 3px; box-shadow: none; }
+    .btn:disabled { cursor: wait; }
+
+    @media (max-width: 991.98px) {
+        .markout-header-inner, .markout-workspace { padding: 20px; }
+        .markout-parent-tab { gap: 10px; padding: 12px; font-size: 14px; }
+        .markout-category-check { display: none; }
+        .markout-employees th, .markout-employees td { padding-right: 16px; padding-left: 16px; }
+    }
+
+    @media (max-width: 767.98px) {
+        .markout-header-inner, .markout-workspace { padding: 16px; }
+        .markout-workspace { gap: 16px; }
+        .markout-category-panel { padding: 16px; }
+        .markout-parent-tabs { flex-direction: column; gap: 8px; }
+        .markout-parent-tab { flex-basis: auto; min-height: 56px; }
+        .markout-category-icon { width: 32px; height: 32px; font-size: 16px; }
+        .markout-category-check { display: inline-block; }
+        .markout-reason-row { margin-top: 16px; padding-top: 16px; }
+        .markout-subcategory { flex: 1 1 auto; padding-right: 12px; padding-left: 12px; }
+        .markout-employee-panel-top { padding: 18px 16px 0; }
+        .markout-employee-heading-row { align-items: flex-start; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+        .markout-current-reason { max-width: 100%; }
+        .markout-employees thead { display: none; }
+        .markout-employees, .markout-employees tbody { display: block; }
+        .markout-employees tr { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; padding: 16px; border-top: 1px solid var(--markout-border); }
+        .markout-employees td { padding: 0; border: 0; min-width: 0; overflow-wrap: anywhere; }
+        .markout-employees td:first-child { grid-column: 1 / -1; padding-right: 30px; }
+        .markout-employees td:nth-child(4) { grid-column: 1 / -1; }
+        .markout-employees tr.is-selected td:first-child { box-shadow: none; }
+        .markout-employees tr.is-selected { box-shadow: inset 3px 0 var(--markout-accent); }
+        .markout-employees .markout-row-action { position: absolute; top: 30px; right: 16px; width: auto; padding: 0; }
+        .markout-mobile-label { display: block; margin-bottom: 6px; color: var(--markout-muted); font-size: 11px; }
+        .markout-empty-row { display: block; }
+        .markout-empty-row td { display: block; padding: 28px 8px; }
+    }
+
+    @media (max-width: 479.98px) {
+        .markout-header-inner { flex-wrap: wrap; gap: 14px; }
+        .markout-title { font-size: 21px; }
+        .markout-title-icon { width: 42px; height: 42px; font-size: 21px; }
+        .markout-back { margin-left: auto; }
+        .markout-search { gap: 8px; padding-left: 12px; }
+        .markout-search-input { font-size: 13px; }
+        .markout-search-button { min-width: 70px; padding: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .markout-parent-tab { transition: none; }
+    }
+}

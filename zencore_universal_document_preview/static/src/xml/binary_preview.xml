@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="universal_document_preview.BinaryField"
+       t-inherit="web.BinaryField"
+       t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_download_file_button')]" position="before">
+            <button
+                t-if="canPreviewDocument"
+                class="btn btn-link btn-sm lh-1 fa fa-eye o_preview_file_button"
+                data-tooltip="Preview"
+                aria-label="Preview"
+                t-on-click.stop="onUniversalFilePreview"
+            />
+        </xpath>
+        <xpath expr="//a[hasclass('o_form_uri')]" position="before">
+            <a
+                t-if="canPreviewDocument"
+                class="o_form_uri me-2"
+                href="#"
+                data-tooltip="Preview"
+                aria-label="Preview"
+                t-on-click.prevent.stop="onUniversalFilePreview"
+            >
+                <span class="fa fa-eye"/>
+            </a>
+        </xpath>
+    </t>
+
+    <t t-name="universal_document_preview.ListBinaryPreviewField">
+        <div t-if="props.record.data[props.name]" class="d-flex align-items-center gap-1 w-100">
+            <span class="text-truncate flex-grow-1" t-esc="fileName"/>
+            <button
+                t-if="canPreviewDocument"
+                class="btn btn-link btn-sm lh-1 fa fa-eye o_preview_file_button"
+                data-tooltip="Preview"
+                aria-label="Preview"
+                t-on-click.stop="onUniversalFilePreview"
+            />
+            <button
+                t-if="props.record.resId"
+                class="btn btn-link btn-sm lh-1 fa fa-download o_download_file_button"
+                data-tooltip="Download"
+                aria-label="Download"
+                t-on-click.stop="onUniversalFileDownload"
+            />
+            <FileUploader
+                t-if="!props.readonly"
+                acceptedFileExtensions="props.acceptedFileExtensions"
+                allowedMIMETypes="props.allowedMIMETypes"
+                onUploaded.bind="update"
+            >
+                <t t-set-slot="toggler">
+                    <button
+                        class="btn btn-link btn-sm lh-1 fa fa-pencil o_select_file_button"
+                        data-tooltip="Replace"
+                        aria-label="Replace"
+                    />
+                </t>
+            </FileUploader>
+            <button
+                t-if="!props.readonly"
+                class="btn btn-link btn-sm lh-1 fa fa-times text-danger o_clear_file_button"
+                data-tooltip="Clear"
+                aria-label="Clear"
+                t-on-click.stop="() => this.update({})"
+            />
+        </div>
+        <label t-elif="!props.readonly" class="o_select_file_button btn btn-sm btn-link p-0">
+            <FileUploader
+                acceptedFileExtensions="props.acceptedFileExtensions"
+                allowedMIMETypes="props.allowedMIMETypes"
+                onUploaded.bind="update"
+            >
+                <t t-set-slot="toggler">
+                    <i class="fa fa-upload fa-fw"/> Upload your file
+                </t>
+            </FileUploader>
+        </label>
+    </t>
+</templates>

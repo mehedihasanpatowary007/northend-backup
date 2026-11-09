@@ -1,0 +1,32 @@
+{
+    'name': 'POS Employee Benefits & Marked Out',
+    'version': '19.0.2.0.6',
+    'category': 'Sales/Point of Sale',
+    'summary': 'Secure zero-payment employee benefits and POS marked-out records',
+    'author': 'ZenCore',
+    'license': 'LGPL-3',
+    'depends': ['point_of_sale', 'hr', 'stock', 'mrp'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'data/markout_categories.xml',
+        'data/default_benefit_rules.xml',
+        'views/category_views.xml',
+        'views/benefit_rule_views.xml',
+        'views/res_users_views.xml',
+        'views/hr_employee_views.xml',
+        'views/markout_views.xml',
+        'views/markout_mrp_views.xml',
+    ],
+    'assets': {
+        'point_of_sale._assets_pos': [
+            'pos_employee_benefits_markout/static/src/app/markout_error.js',
+            'pos_employee_benefits_markout/static/src/app/marked_out.js',
+            'pos_employee_benefits_markout/static/src/app/marked_out.xml',
+            'pos_employee_benefits_markout/static/src/app/marked_out.scss',
+            'pos_employee_benefits_markout/static/src/app/pos_navigation.scss',
+        ],
+    },
+    'installable': True,
+    'application': False,
+}

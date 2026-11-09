@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_waiter_cashier_template" name="Waiter Cashier Report Template">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+                <meta http-equiv="Pragma" content="no-cache"/>
+                <meta http-equiv="Expires" content="0"/>
+                <title></title>
+                <style>
+                    @page {
+                        size: A4 portrait;
+                        margin: 0;
+                    }
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        color-adjust: exact !important;
+                        box-sizing: border-box;
+                    }
+                    body {
+                        font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+                        color: #000000;
+                        background-color: #f4f6f8;
+                        margin: 0;
+                        padding: 20px;
+                        font-size: 13px;
+                    }
+                    .report-wrapper {
+                        max-width: 780px;
+                        margin: 0 auto;
+                        background: #ffffff;
+                        padding: 30px 40px;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+                    }
+                    .report-header {
+                        text-align: center;
+                        margin-bottom: 20px;
+                    }
+                    .report-header .report-title {
+                        font-size: 15px;
+                        font-weight: bold;
+                        margin-bottom: 3px;
+                    }
+                    .report-header .period-text {
+                        font-size: 12px;
+                        font-weight: bold;
+                        margin-bottom: 3px;
+                    }
+                    .report-header .company-name {
+                        font-size: 13px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        margin-bottom: 2px;
+                    }
+                    .report-header .company-legal {
+                        font-size: 12px;
+                        font-weight: bold;
+                        margin-bottom: 2px;
+                    }
+                    .report-header .company-address {
+                        font-size: 12px;
+                        font-weight: bold;
+                        margin-bottom: 2px;
+                    }
+                    .report-header .tax-info {
+                        font-size: 12px;
+                        font-weight: bold;
+                        margin-bottom: 6px;
+                    }
+                    .export-link-container {
+                        text-align: center;
+                        margin-bottom: 15px;
+                    }
+                    .export-link {
+                        color: #0066cc;
+                        font-size: 13px;
+                        font-weight: 500;
+                        text-decoration: underline;
+                        cursor: pointer;
+                        display: inline-block;
+                        margin-right: 15px;
+                    }
+                    .print-btn {
+                        background: #6c757d;
+                        color: #ffffff;
+                        border: none;
+                        padding: 3px 12px;
+                        font-size: 12px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                    }
+                    .report-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 16px;
+                        font-size: 12px;
+                    }
+                    .report-table th, .report-table td {
+                        border: 1px solid #777777;
+                        padding: 4px 8px;
+                    }
+                    .table-main-header {
+                        background-color: #707070 !important;
+                        color: #ffffff !important;
+                        font-weight: bold;
+                        text-align: center;
+                        font-size: 13px;
+                        border: 1px solid #707070 !important;
+                    }
+                    .table-sub-header {
+                        background-color: #ffffff !important;
+                        font-weight: bold;
+                        color: #000000;
+                    }
+                    .total-row td {
+                        font-weight: bold;
+                    }
+                    .text-left {
+                        text-align: left;
+                    }
+                    .text-center {
+                        text-align: center;
+                    }
+                    .text-right {
+                        text-align: right;
+                    }
+                    .report-footer {
+                        font-size: 11px;
+                        color: #333333;
+                        margin-top: 25px;
+                        line-height: 1.5;
+                    }
+                    .report-footer .disclaimer {
+                        margin-bottom: 2px;
+                    }
+                    .report-footer .print-time {
+                        margin-bottom: 2px;
+                    }
+                    .report-footer .powered-by {
+                        margin-top: 2px;
+                    }
+                    @media print {
+                        html, body {
+                            background-color: #ffffff !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+                        .report-wrapper {
+                            box-shadow: none !important;
+                            margin: 0 !important;
+                            padding: 12mm 15mm !important;
+                            max-width: 100% !important;
+                            width: 100% !important;
+                        }
+                        .export-link-container {
+                            display: none !important;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="report-wrapper">
+                    <!-- Actions (Hidden in Print) -->
+                    <div class="export-link-container">
+                        <a t-attf-href="/pos/waiter_cashier_report/export_xlsx?config_id={{ config.id if config else '' }}&amp;session_id={{ session_id or '' }}" class="export-link">
+                            Export Data
+                        </a>
+                        <button onclick="window.print()" class="print-btn">
+                            Print
+                        </button>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="report-header">
+                        <div class="report-title">Waiter Cashier Report</div>
+                        <t t-if="session_name">
+                            <div class="period-text">
+                                Session: <t t-esc="session_name"/> (<t t-esc="session_state"/>)
+                            </div>
+                        </t>
+                        <div class="period-text">
+                            Period: <t t-esc="period_string"/>
+                        </div>
+                        <div class="company-name">
+                            <t t-esc="company.name"/>
+                        </div>
+                        <div class="company-address">
+                            <t t-if="company.partner_id.city">
+                                <t t-esc="company.partner_id.city"/>, <t t-esc="company.partner_id.country_id.name or 'Bangladesh'"/>
+                            </t>
+                            <t t-else="">
+                                Dhaka-1208, Bangladesh
+                            </t>
+                        </div>
+                        <div class="tax-info">
+                            Central BIN-<t t-esc="company.vat or '000466455-0100'"/>, MUSAK-6.3
+                        </div>
+                    </div>
+
+                    <!-- Table 1: Incomes -->
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="table-main-header">
+                                    <t t-esc="config.name if config else 'Shop'"/> Incomes
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="income_list">
+                                <t t-foreach="income_list" t-as="item">
+                                    <tr>
+                                        <td class="text-left" style="width: 48%;">
+                                            <t t-esc="item['name']"/>
+                                        </td>
+                                        <td class="text-center" style="width: 14%;">
+                                            <t t-esc="item['count']"/>
+                                        </td>
+                                        <td class="text-right" style="width: 16%;">
+                                            <t t-esc="'%.2f' % item['percentage']"/>%
+                                        </td>
+                                        <td class="text-right" style="width: 22%;">
+                                            <t t-esc="'%.2f' % item['amount']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="4" class="text-center">No transactions recorded for today.</td>
+                                </tr>
+                            </t>
+                            <!-- Total Row -->
+                            <tr class="total-row">
+                                <td class="text-left">
+                                    <t t-esc="config.name if config else 'Shop'"/> TOTAL INCOME
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="total_payment_count"/>
+                                </td>
+                                <td class="text-center">
+                                    -
+                                </td>
+                                <td class="text-right">
+                                    <t t-esc="'%.2f' % total_income"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Table 2: User Wise Settlement -->
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th colspan="3" class="table-main-header">User Wise Settlement</th>
+                            </tr>
+                            <tr>
+                                <th class="table-sub-header text-left" style="width: 52%;">User Name</th>
+                                <th class="table-sub-header text-right" style="width: 30%;">Collection</th>
+                                <th class="table-sub-header text-right" style="width: 18%;">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="user_settlement_list">
+                                <t t-foreach="user_settlement_list" t-as="u">
+                                    <tr>
+                                        <td class="text-left"><t t-esc="u['name']"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % u['collection']"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % u['percentage']"/>%</td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="3" class="text-center">No settlement records.</td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Table 3: User Wise Order Collection -->
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th colspan="3" class="table-main-header">User Wise Order Collection</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="user_settlement_list">
+                                <t t-foreach="user_settlement_list" t-as="u">
+                                    <tr>
+                                        <td class="text-left" style="width: 52%;"><t t-esc="u['name']"/></td>
+                                        <td class="text-right" style="width: 30%;"><t t-esc="'%.2f' % u['collection']"/></td>
+                                        <td class="text-right" style="width: 18%;"><t t-esc="'%.2f' % u['percentage']"/>%</td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="3" class="text-center">No order records.</td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Table 4: User Wise Ticket Creation -->
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th colspan="3" class="table-main-header">User Wise Ticket Creation</th>
+                            </tr>
+                            <tr>
+                                <th class="table-sub-header text-left" style="width: 52%;">User Name</th>
+                                <th class="table-sub-header text-right" style="width: 30%;">Created</th>
+                                <th class="table-sub-header text-right" style="width: 18%;">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="user_settlement_list">
+                                <t t-foreach="user_settlement_list" t-as="u">
+                                    <tr>
+                                        <td class="text-left"><t t-esc="u['name']"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % u['collection']"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % u['percentage']"/>%</td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="3" class="text-center">No ticket creation records.</td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Footer -->
+                    <div class="report-footer">
+                        <div class="disclaimer">*** This is computer generated report and does not require any signature</div>
+                        <div class="print-time">Print Date Time: <t t-esc="print_datetime"/></div>
+                        <div class="powered-by">Powered by: 3S</div>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

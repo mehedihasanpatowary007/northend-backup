@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="pos_settlement_bill.ProductScreen" t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension">
+        <xpath expr="//ActionpadWidget" position="replace">
+            <div class="pos-settlement-actions">$0</div>
+        </xpath>
+        <xpath expr="//ActionpadWidget" position="before">
+            <button t-if="!this.isMarkoutOrder and currentOrder and !currentOrder.isEmpty()" type="button" class="btn pos-settlement-button w-100"
+                    t-att-disabled="!settlementBillAvailable or settlementBillState.busy or settlementBillPrinter.state.isPrinting"
+                    t-att-data-hotkey="settlementBillAvailable and !settlementBillState.busy and !settlementBillPrinter.state.isPrinting ? 'b' : undefined"
+                    aria-keyshortcuts="Alt+B"
+                    t-on-click="printSettlementBill" title="Print an unpaid bill with employee PIN approval">
+                <span class="pos-settlement-label">
+                    <i t-att-class="settlementBillState.busy ? 'fa fa-spinner fa-spin' : 'fa fa-file-text-o'" aria-hidden="true"/>
+                    <span t-if="settlementBillState.busy">Preparing Bill…</span>
+                    <span t-else="">Settlement Bill</span>
+                </span>
+                <span class="pos-settlement-pin"><i class="fa fa-lock" aria-hidden="true"/>PIN required</span>
+            </button>
+        </xpath>
+        <xpath expr="//button[hasclass('pay-button')]" position="attributes">
+            <attribute name="t-att-data-hotkey">!this.isMarkoutOrder and currentOrder and !currentOrder.isEmpty() ? 'p' : undefined</attribute>
+            <attribute name="t-att-aria-keyshortcuts">!this.isMarkoutOrder and currentOrder and !currentOrder.isEmpty() ? 'Alt+P' : undefined</attribute>
+        </xpath>
+    </t>
+
+    <t t-name="pos_settlement_bill.PaymentShortcut" t-inherit="point_of_sale.ActionpadWidget" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('pay-order-button')]" position="attributes">
+            <attribute name="t-att-data-hotkey">this.pos.router.state.current === 'ProductScreen' and !this.pos.isMarkoutOrder?.() ? 'p' : undefined</attribute>
+            <attribute name="t-att-aria-keyshortcuts">this.pos.router.state.current === 'ProductScreen' and !this.pos.isMarkoutOrder?.() ? 'Alt+P' : undefined</attribute>
+        </xpath>
+    </t>
+</templates>

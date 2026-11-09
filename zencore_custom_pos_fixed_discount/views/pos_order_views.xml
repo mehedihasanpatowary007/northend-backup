@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_pos_form_fixed_discount" model="ir.ui.view">
+        <field name="name">pos.order.form.fixed.discount</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']/list/field[@name='discount']" position="after">
+                <field name="fixed_discount_amount" string="Fixed Disc" widget="monetary"/>
+            </xpath>
+            <xpath expr="//field[@name='lines']/form/group/field[@name='discount']" position="after">
+                <field name="fixed_discount_amount" string="Fixed Disc" widget="monetary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_order_line_fixed_discount" model="ir.ui.view">
+        <field name="name">pos.order.line.list.fixed.discount</field>
+        <field name="model">pos.order.line</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_line"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='discount']" position="after">
+                <field name="fixed_discount_amount" string="Fixed Disc" readonly="1" widget="monetary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_order_line_form_fixed_discount" model="ir.ui.view">
+        <field name="name">pos.order.line.form.fixed.discount</field>
+        <field name="model">pos.order.line</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='discount']" position="after">
+                <field name="fixed_discount_amount" string="Fixed Disc" widget="monetary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_report_pos_order_pivot_fixed_discount" model="ir.ui.view">
+        <field name="name">report.pos.order.pivot.fixed.discount</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_pivot"/>
+        <field name="arch" type="xml">
+            <xpath expr="//pivot/field[@name='price_total']" position="after">
+                <field name="total_discount" type="measure"/>
+                <field name="fixed_discount_amount" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_report_pos_order_graph_fixed_discount" model="ir.ui.view">
+        <field name="name">report.pos.order.graph.fixed.discount</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_graph"/>
+        <field name="arch" type="xml">
+            <xpath expr="//graph/field[@name='price_total']" position="after">
+                <field name="total_discount" type="measure"/>
+                <field name="fixed_discount_amount" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="report_pos_order_view_tree_fixed_discount" model="ir.ui.view">
+        <field name="name">report.pos.order.view.list.fixed.discount</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.report_pos_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='price_total']" position="after">
+                <field name="total_discount" optional="show"/>
+                <field name="fixed_discount_amount" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

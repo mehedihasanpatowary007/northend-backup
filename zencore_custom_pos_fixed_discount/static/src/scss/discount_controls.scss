@@ -1,0 +1,37 @@
+.pos .ne-discount-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+}
+.pos .ne-discount-buttons .btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    min-height: 50px;
+    padding: 7px 3px;
+    border: 1px solid #cbd6d9;
+    border-radius: 5px;
+    font-size: 0.82rem;
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.pos .ne-discount-scope { font-weight: 600; }
+.pos .ne-discount-type { font-size: 0.7rem; font-weight: 400; }
+.pos .ne-discount-buttons .btn:focus-visible { outline: 2px solid var(--primary, #714b67); outline-offset: 2px; }
+.pos .ne-discount-line:not(.active) { background-color: #e3eff1; color: #172f34; }
+.pos .ne-discount-order:not(.active) { background-color: #ece6ed; color: #45374a; }
+.pos .ne-discount-buttons .active { border-color: var(--primary, #714b67); }
+.pos .ne-discount-buttons .btn:disabled { opacity: 0.45; }
+.pos .ne-discount-context { line-height: 1.2; overflow-wrap: anywhere; }
+.pos .ne-final-tax-note { font-size: 0.72rem; }
+.pos .ne-grand-total { font-weight: 700; }
+.pos .leftpane { min-height: 0; }
+@media (max-height: 760px) {
+    .pos .ne-discount-buttons { gap: 4px; }
+    .pos .ne-discount-buttons .btn { min-height: 44px; }
+    .pos .ne-discount-context { font-size: 0.75rem; }
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_pos_order_global_discount" model="ir.ui.view">
+        <field name="name">pos.order.form.global.discount</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']" position="before">
+                <group string="Global Discount">
+                    <field name="global_discount_type" readonly="state != 'draft'"/>
+                    <field name="global_discount_input_value" readonly="state != 'draft'"/>
+                    <field name="global_discount_amount" widget="monetary"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_report_pos_order_global_discount_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.global.discount.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_pivot"/>
+        <field name="arch" type="xml">
+            <xpath expr="//pivot" position="inside">
+                <field name="global_discount_amount" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

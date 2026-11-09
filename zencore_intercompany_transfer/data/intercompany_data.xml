@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Archive only this module's legacy location, identified by its XML ID.
+         XML function calls require integer IDs, not recordsets. On a fresh
+         install the legacy XML ID is absent, so pass an empty ID list. -->
+    <function model="stock.location" name="write"
+              eval="((obj().env.ref('zencore_intercompany_transfer.location_intercompany_transit', raise_if_not_found=False) or obj()).exists().ids, {'active': False})"/>
+    <record id="sequence_intercompany_transfer" model="ir.sequence">
+        <field name="name">Inter-Company Transfer</field>
+        <field name="code">zencore.intercompany.transfer</field>
+        <field name="prefix">ICT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

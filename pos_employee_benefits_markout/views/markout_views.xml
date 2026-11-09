@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_markout_list" model="ir.ui.view">
+        <field name="name">pos.markout.list</field>
+        <field name="model">pos.markout</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-success="state == 'confirmed'">
+                <field name="name" string="Reference"/>
+                <field name="date"/>
+                <field name="parent_category_id"/>
+                <field name="category_id"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_badge" string="Badge ID"/>
+                <field name="partner_name" string="POS Customer"/>
+                <field name="cashier_id"/>
+                <field name="config_id"/>
+                <field name="retail_reference_total" sum="Reference Value"/>
+                <field name="charged_amount" sum="Charged Amount"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="pos_markout_form" model="ir.ui.view">
+        <field name="name">pos.markout.form</field>
+        <field name="model">pos.markout</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group string="Reason">
+                            <field name="parent_category_id"/>
+                            <field name="category_id"/>
+                            <field name="employee_name" string="Employee"/>
+                            <field name="employee_badge" string="Badge ID"/>
+                            <field name="employee_id" groups="hr.group_hr_user"/>
+                            <field name="partner_name" string="POS Customer"/>
+                            <field name="cashier_id"/>
+                        </group>
+                        <group string="POS Session">
+                            <field name="date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="config_id"/>
+                            <field name="session_id"/>
+                            <field name="uuid" groups="base.group_system"/>
+                            <field name="retail_reference_total"/>
+                            <field name="charged_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                    <field name="line_ids">
+                        <list create="0" edit="0" delete="0">
+                            <field name="product_id"/>
+                            <field name="description"/>
+                            <field name="quantity"/>
+                            <field name="list_price_snapshot"/>
+                            <field name="reference_total" sum="Reference Value"/>
+                            <field name="cost_unit" groups="point_of_sale.group_pos_manager"/>
+                            <field name="stock_cost_total" sum="Stock Cost" groups="point_of_sale.group_pos_manager"/>
+                            <field name="note"/>
+                            <field name="stock_move_ids" widget="many2many_tags" groups="stock.group_stock_user"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                    <field name="stock_move_ids" widget="many2many_tags" groups="stock.group_stock_user"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="pos_markout_search" model="ir.ui.view">
+        <field name="name">pos.markout.search</field>
+        <field name="model">pos.markout</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Reference"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_badge" string="Badge ID"/>
+                <field name="partner_name" string="POS Customer"/>
+                <field name="category_id"/>
+                <field name="cashier_id"/>
+                <field name="config_id"/>
+                <filter name="today" string="Today" domain="[('date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <group>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_name'}"/>
+                    <filter name="group_cashier" string="Cashier" context="{'group_by': 'cashier_id'}"/>
+                    <filter name="group_pos" string="POS Register" context="{'group_by': 'config_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="pos_markout_pivot" model="ir.ui.view">
+        <field name="name">pos.markout.pivot</field>
+        <field name="model">pos.markout</field>
+        <field name="arch" type="xml">
+            <pivot string="Marked Out Analysis">
+                <field name="category_id" type="row"/>
+                <field name="employee_name" type="row"/>
+                <field name="date" interval="day" type="col"/>
+                <field name="retail_reference_total" type="measure"/>
+                <field name="charged_amount" type="measure"/>
+                <field name="line_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="pos_markout_line_list" model="ir.ui.view">
+        <field name="name">pos.markout.line.list</field>
+        <field name="model">pos.markout.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="date"/>
+                <field name="markout_id"/>
+                <field name="category_id"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_badge" string="Badge ID"/>
+                <field name="partner_name" string="POS Customer"/>
+                <field name="config_id"/>
+                <field name="product_id"/>
+                <field name="quantity" sum="Quantity"/>
+                <field name="reference_total" sum="Retail Reference"/>
+                <field name="cost_unit" groups="point_of_sale.group_pos_manager"/>
+                <field name="stock_cost_total" sum="Stock Cost" groups="point_of_sale.group_pos_manager"/>
+                <field name="stock_move_ids" widget="many2many_tags" groups="stock.group_stock_user"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="pos_markout_line_search" model="ir.ui.view">
+        <field name="name">pos.markout.line.search</field>
+        <field name="model">pos.markout.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="markout_id"/>
+                <field name="category_id"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_badge" string="Badge ID"/>
+                <field name="partner_name" string="POS Customer"/>
+                <field name="config_id"/>
+                <filter name="today" string="Today" domain="[('date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <group>
+                    <filter name="group_product" string="Product" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_name'}"/>
+                    <filter name="group_register" string="POS Register" context="{'group_by': 'config_id'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="pos_markout_line_pivot" model="ir.ui.view">
+        <field name="name">pos.markout.line.pivot</field>
+        <field name="model">pos.markout.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Marked Out Item Analysis">
+                <field name="category_id" type="row"/>
+                <field name="product_id" type="row"/>
+                <field name="employee_name" type="row"/>
+                <field name="date" interval="day" type="col"/>
+                <field name="quantity" type="measure"/>
+                <field name="reference_total" type="measure"/>
+                <field name="stock_cost_total" type="measure" groups="point_of_sale.group_pos_manager"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="pos_markout_action" model="ir.actions.act_window">
+        <field name="name">Marked Out Transactions</field>
+        <field name="res_model">pos.markout</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="pos_markout_search"/>
+        <field name="context">{'search_default_confirmed': 1}</field>
+    </record>
+    <record id="pos_markout_benefit_usage_list" model="ir.ui.view">
+        <field name="name">pos.markout.benefit.usage.list</field>
+        <field name="model">pos.markout.benefit.usage</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="benefit_date"/>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_badge" string="Badge ID"/>
+                <field name="benefit_name" string="Benefit"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="config_id"/>
+                <field name="quantity" string="This Transaction" sum="Used"/>
+                <field name="used_quantity"/>
+                <field name="max_quantity" string="Daily Limit"/>
+                <field name="remaining_quantity" string="Remaining Today"/>
+                <field name="markout_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="pos_markout_benefit_usage_search" model="ir.ui.view">
+        <field name="name">pos.markout.benefit.usage.search</field>
+        <field name="model">pos.markout.benefit.usage</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_name" string="Employee"/>
+                <field name="employee_badge" string="Badge ID"/>
+                <field name="benefit_name" string="Benefit"/>
+                <field name="config_id"/>
+                <filter name="today" string="Today" domain="[('benefit_date', '=', context_today())]"/>
+                <group>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_name'}"/>
+                    <filter name="group_benefit" string="Benefit" context="{'group_by': 'benefit_name'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'benefit_date'}"/>
+                    <filter name="group_register" string="POS Register" context="{'group_by': 'config_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="pos_markout_benefit_usage_action" model="ir.actions.act_window">
+        <field name="name">Employee Benefit Usage</field>
+        <field name="res_model">pos.markout.benefit.usage</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="pos_markout_benefit_usage_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+    <record id="pos_markout_lines_action" model="ir.actions.act_window">
+        <field name="name">Marked Out Items</field>
+        <field name="res_model">pos.markout.line</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="search_view_id" ref="pos_markout_line_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+    <menuitem id="pos_markout_root_menu" name="Marked Out" parent="point_of_sale.menu_point_of_sale" sequence="80"/>
+    <menuitem id="pos_markout_transactions_menu" name="Transactions" parent="pos_markout_root_menu" action="pos_markout_action" sequence="10"/>
+    <menuitem id="pos_markout_items_menu" name="Item Analysis" parent="pos_markout_root_menu" action="pos_markout_lines_action" sequence="20"/>
+    <menuitem id="pos_markout_benefits_menu" name="Benefit Usage" parent="pos_markout_root_menu" action="pos_markout_benefit_usage_action" sequence="30"/>
+    <menuitem id="pos_markout_setup_menu" name="Setup" parent="pos_markout_root_menu" sequence="90" groups="base.group_user"/>
+    <menuitem id="pos_markout_category_menu" name="Categories" parent="pos_markout_setup_menu" action="pos_markout_category_action" sequence="10" groups="base.group_user"/>
+    <menuitem id="pos_benefit_rule_menu" name="Benefit Rules" parent="pos_markout_setup_menu" action="pos_benefit_rule_action" sequence="20" groups="base.group_user"/>
+</odoo>

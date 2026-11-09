@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_users_pos_markout_access" model="ir.ui.view">
+        <field name="name">res.users.pos.markout.access</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="POS Marked Out Access" name="pos_markout_access" groups="base.group_system">
+                    <group>
+                        <group string="Actions">
+                            <field name="pos_markout_can_view"/>
+                            <field name="pos_markout_can_create"/>
+                            <field name="pos_markout_can_manage_categories"/>
+                            <field name="pos_markout_can_reverse" readonly="1"/>
+                            <field name="pos_markout_can_view_reports"/>
+                        </group>
+                        <group string="Allowed Subcategories">
+                            <field name="pos_markout_allowed_category_ids" widget="many2many_tags" domain="[('parent_id', '!=', False)]"/>
+                            <div class="text-muted">Access defaults to deny. Grant child categories directly; parent access is derived from the permitted active children.</div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

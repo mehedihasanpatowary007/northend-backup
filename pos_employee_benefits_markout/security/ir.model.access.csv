@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_markout_category_internal,Marked Out category setup,model_pos_markout_category,base.group_user,1,1,1,1
+access_benefit_rule_internal,Marked Out benefit rule setup,model_pos_benefit_rule,base.group_user,1,1,1,1
+access_markout_report_internal,Marked Out records,model_pos_markout,base.group_user,1,0,0,0
+access_markout_line_report_internal,Marked Out items,model_pos_markout_line,base.group_user,1,0,0,0
+access_markout_benefit_usage_report_internal,Marked Out benefit usage,model_pos_markout_benefit_usage,base.group_user,1,0,0,0

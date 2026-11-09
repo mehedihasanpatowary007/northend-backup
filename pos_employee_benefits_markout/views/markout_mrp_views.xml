@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_markout_form_manufacturing" model="ir.ui.view">
+        <field name="name">pos.markout.form.manufacturing</field>
+        <field name="model">pos.markout</field>
+        <field name="inherit_id" ref="pos_markout_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/field[@name='stock_move_ids']" position="after">
+                <group string="Manufacturing Orders" groups="mrp.group_mrp_user">
+                    <field name="mrp_production_ids" nolabel="1" colspan="2" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="name"/>
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom_id"/>
+                            <field name="origin" optional="hide"/>
+                            <field name="state"/>
+                            <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

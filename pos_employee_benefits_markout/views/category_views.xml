@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_markout_category_list" model="ir.ui.view">
+        <field name="name">pos.markout.category.list</field>
+        <field name="model">pos.markout.category</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence, id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="icon" optional="hide"/>
+                <field name="parent_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="stock_policy" optional="hide"/>
+                <field name="code" groups="base.group_no_one" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    <record id="pos_markout_category_form" model="ir.ui.view">
+        <field name="name">pos.markout.category.form</field>
+        <field name="model">pos.markout.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Cafe Usages or Training"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id" domain="[('parent_id', '=', False), ('id', '!=', id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]" options="{'no_create': True}" readonly="child_ids"/>
+                            <field name="icon" invisible="parent_id"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="sequence" groups="base.group_no_one"/>
+                            <field name="code" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <group string="Subcategories" invisible="parent_id">
+                        <div class="text-muted" colspan="2">Add subcategories below. Fresh products use Prepare Product to manufacture and consume automatically. Use existing-stock write-off or return only for items already made. Cashier category permissions and employee benefit allowances are configured separately.</div>
+                        <field name="child_ids" nolabel="1" colspan="2" context="{'default_company_id': company_id, 'active_test': False}">
+                            <list default_order="sequence, id">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="stock_policy"/>
+                                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                                <field name="active" widget="boolean_toggle"/>
+                            </list>
+                            <form string="Subcategory">
+                                <sheet>
+                                    <div class="oe_title">
+                                        <label for="name"/>
+                                        <h1><field name="name" placeholder="e.g. Training"/></h1>
+                                    </div>
+                                    <field name="parent_id" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <group>
+                                        <group>
+                                            <field name="active" widget="boolean_toggle"/>
+                                            <field name="company_id" groups="base.group_multi_company"/>
+                                        </group>
+                                        <group>
+                                            <field name="sequence" groups="base.group_no_one"/>
+                                            <field name="code" groups="base.group_no_one"/>
+                                        </group>
+                                    </group>
+                                    <group string="Products">
+                                        <field name="product_ids" widget="many2many_tags" domain="[('available_in_pos', '=', True), ('sale_ok', '=', True)]" options="{'no_create': True}"/>
+                                        <div class="text-muted" colspan="2">Leave empty to allow all products available in the POS. Benefit limits are configured separately in Benefit Rules.</div>
+                                    </group>
+                                    <group string="Inventory Flow">
+                                        <field name="stock_policy"/>
+                                        <field name="stock_location_id" invisible="stock_policy not in ['prepare', 'consume', 'restock']" required="stock_policy in ['consume', 'restock']" options="{'no_create': True}"/>
+                                        <div class="text-warning" colspan="2" invisible="stock_policy != 'unconfigured'">Choose stock handling before this subcategory can be used to confirm a Marked Out transaction.</div>
+                                        <div class="text-muted" colspan="2" invisible="stock_policy != 'prepare'">A manufacturing recipe creates and completes an MO, consumes ingredients, then issues the finished item once. Products without a manufacturing recipe use available stock. The destination is optional and defaults to the product's inventory-loss location.</div>
+                                        <div class="text-muted" colspan="2" invisible="stock_policy != 'consume'">Writes off existing finished stock without making another product. Use this for expired or damaged items.</div>
+                                        <div class="text-muted" colspan="2" invisible="stock_policy != 'restock'">Moves returned items from the approved source location back into POS stock.</div>
+                                    </group>
+                                </sheet>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Products" invisible="not parent_id">
+                        <field name="product_ids" widget="many2many_tags" domain="[('available_in_pos', '=', True), ('sale_ok', '=', True)]" options="{'no_create': True}"/>
+                        <div class="text-muted" colspan="2">Leave empty to allow all products available in the POS. Benefit limits are configured separately in Benefit Rules.</div>
+                    </group>
+                    <group string="Inventory Flow" invisible="not parent_id">
+                        <field name="stock_policy"/>
+                        <field name="stock_location_id" invisible="stock_policy not in ['prepare', 'consume', 'restock']" required="parent_id and stock_policy in ['consume', 'restock']" options="{'no_create': True}"/>
+                        <div class="text-warning" colspan="2" invisible="stock_policy != 'unconfigured'">Choose stock handling before this subcategory can be used to confirm a Marked Out transaction.</div>
+                        <div class="text-muted" colspan="2" invisible="stock_policy != 'prepare'">A manufacturing recipe creates and completes an MO, consumes ingredients, then issues the finished item once. Products without a manufacturing recipe use available stock. The destination is optional and defaults to the product's inventory-loss location.</div>
+                        <div class="text-muted" colspan="2" invisible="stock_policy != 'consume'">Writes off existing finished stock without making another product. Use this for expired or damaged items.</div>
+                        <div class="text-muted" colspan="2" invisible="stock_policy != 'restock'">Moves returned items from the approved source location back into POS stock.</div>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="pos_markout_category_search" model="ir.ui.view">
+        <field name="name">pos.markout.category.search</field>
+        <field name="model">pos.markout.category</field>
+        <field name="arch" type="xml">
+            <search string="Categories and Subcategories">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <filter name="categories" string="Main Categories" domain="[('parent_id', '=', False)]"/>
+                <filter name="subcategories" string="Subcategories" domain="[('parent_id', '!=', False)]"/>
+                <separator/>
+                <filter name="needs_stock_setup" string="Needs Stock Setup" domain="[('parent_id', '!=', False), ('stock_policy', '=', 'unconfigured')]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_parent" string="Parent Category" context="{'group_by': 'parent_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="pos_markout_category_action" model="ir.actions.act_window">
+        <field name="name">Marked Out Categories</field>
+        <field name="res_model">pos.markout.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="pos_markout_category_search"/>
+        <field name="context">{'search_default_categories': 1}</field>
+    </record>
+</odoo>

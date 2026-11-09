@@ -1,0 +1,58 @@
+.pos .product-screen .pos-settlement-actions:has(> .pos-settlement-button) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "bill payment";
+    gap: 8px;
+    align-items: stretch;
+
+    // Native compact-screen customer and order tools keep their full row.
+    &:has(> .actionpad > div:not(.validation)) {
+        grid-template-areas: "tools tools" "bill payment";
+    }
+
+    > .pos-settlement-button { grid-area: bill; }
+    > .actionpad { display: contents !important; }
+    > .actionpad > div:not(.validation) { grid-area: tools; min-width: 0; }
+    > .actionpad > .validation {
+        grid-area: payment;
+        display: flex;
+        align-items: stretch;
+        min-width: 0;
+        width: 100%;
+        margin: 0;
+
+        > div { width: 100%; margin: 0; }
+        .pay-order-button { min-height: 64px; border-radius: 9px; }
+    }
+}
+
+.pos .product-screen .pos-settlement-button {
+    --settlement-accent: var(--primary, var(--bs-primary, #{$o-brand-primary}));
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    min-height: 64px;
+    padding: 10px 8px;
+    color: var(--settlement-accent);
+    background: var(--bs-body-bg, #fff);
+    border: 1px solid var(--settlement-accent);
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+
+    .pos-settlement-label,
+    .pos-settlement-pin {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .pos-settlement-label { text-align: center; }
+    .pos-settlement-pin { font-size: 11px; font-weight: 400; white-space: nowrap; }
+    &:hover:not(:disabled) { background: var(--bs-tertiary-bg, #f8f9fa); }
+    &:focus-visible { outline: 2px solid var(--settlement-accent); outline-offset: 2px; }
+    &:disabled { opacity: 0.5; }
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="pos_config_view_form_dashboard_target" model="ir.ui.view">
+        <field name="name">pos.config.form.dashboard.target</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="dashboard_monthly_target"/>
+            </xpath>
+            <xpath expr="//field[@name='advanced_employee_ids']" position="before">
+                <field name="dashboard_employee_company_ids" invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='advanced_employee_ids']" position="attributes">
+                <attribute name="domain">[('active', '=', True), ('company_id', 'in', dashboard_employee_company_ids)]</attribute>
+                <attribute name="context">{'allowed_company_ids': dashboard_employee_company_ids}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='basic_employee_ids']" position="attributes">
+                <attribute name="domain">[('active', '=', True), ('company_id', 'in', dashboard_employee_company_ids)]</attribute>
+                <attribute name="context">{'allowed_company_ids': dashboard_employee_company_ids}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='minimal_employee_ids']" position="attributes">
+                <attribute name="domain">[('active', '=', True), ('company_id', 'in', dashboard_employee_company_ids)]</attribute>
+                <attribute name="context">{'allowed_company_ids': dashboard_employee_company_ids}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_view_form_dashboard_target" model="ir.ui.view">
+        <field name="name">hr.employee.form.dashboard.target</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="dashboard_monthly_target"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

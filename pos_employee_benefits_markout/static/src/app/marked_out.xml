@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="pos_employee_benefits_markout.MarkedOutScreen">
+        <div class="markout-screen d-flex flex-column h-100">
+            <header class="markout-header">
+                <div class="markout-header-inner">
+                    <div class="markout-title-wrap">
+                        <span class="markout-title-icon"><i class="fa fa-gift" aria-hidden="true"/></span>
+                        <div>
+                            <h1 class="markout-title">Marked Out</h1>
+                            <p class="markout-subtitle">Staff benefits and internal usage</p>
+                        </div>
+                    </div>
+                    <button class="markout-back btn" t-att-disabled="state.busy" t-on-click="returnToRegister">
+                        <i class="fa fa-arrow-left" aria-hidden="true"/><span>Return to Register</span>
+                    </button>
+                </div>
+            </header>
+            <div class="markout-content flex-grow-1 overflow-auto">
+                <div class="markout-workspace">
+                    <section t-if="state.categories.length" class="markout-category-panel" aria-labelledby="markout-category-heading">
+                        <h2 id="markout-category-heading" class="markout-section-label">Category</h2>
+                        <nav class="markout-parent-tabs" aria-label="Marked Out categories">
+                            <button t-foreach="state.categories" t-as="parent" t-key="parent.id"
+                                    class="markout-parent-tab btn"
+                                    t-att-class="{'is-active': state.parent?.id === parent.id}"
+                                    t-att-aria-pressed="state.parent?.id === parent.id ? 'true' : 'false'"
+                                    t-att-disabled="state.busy" t-on-click="() => this.selectParent(parent)">
+                                <span class="markout-category-icon"><i t-att-class="categoryIcon(parent)" aria-hidden="true"/></span>
+                                <span class="markout-category-name" t-esc="parent.name"/>
+                                <i class="fa fa-check-circle markout-category-check" aria-hidden="true"/>
+                            </button>
+                        </nav>
+                        <div t-if="state.parent" class="markout-reason-row">
+                            <h3 class="markout-section-label">Reason</h3>
+                            <div class="markout-subcategories" aria-label="Marked Out reasons">
+                                <button t-foreach="state.parent.children || []" t-as="child" t-key="child.id"
+                                        class="markout-subcategory btn"
+                                        t-att-class="{'is-active': state.child?.id === child.id}"
+                                        t-att-aria-pressed="state.child?.id === child.id ? 'true' : 'false'"
+                                        t-att-disabled="state.busy" t-on-click="() => this.selectChild(child)">
+                                    <i t-if="state.child?.id === child.id" class="fa fa-check" aria-hidden="true"/>
+                                    <span t-esc="child.name"/>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                    <div t-if="state.error" class="markout-error" role="alert">
+                        <i class="fa fa-exclamation-circle" aria-hidden="true"/><span t-esc="state.error"/>
+                    </div>
+                    <section class="markout-employee-panel" aria-labelledby="markout-employee-heading"
+                             t-att-aria-busy="state.busy or state.searching ? 'true' : 'false'">
+                        <div class="markout-employee-panel-top">
+                            <div class="markout-employee-heading-row">
+                                <div>
+                                    <h2 id="markout-employee-heading">Choose an employee</h2>
+                                    <p>Select an employee to open the register.</p>
+                                </div>
+                                <span t-if="state.child" class="markout-current-reason"><i t-att-class="categoryIcon(state.parent)" aria-hidden="true"/><t t-esc="state.child.name"/></span>
+                                <span t-else="" class="text-muted">Select a subcategory</span>
+                            </div>
+                            <label class="visually-hidden" for="markout-employee-search">Search by employee name or Badge ID</label>
+                            <div class="markout-search">
+                                <i class="fa fa-search markout-search-icon" aria-hidden="true"/>
+                                <input id="markout-employee-search" t-ref="employeeSearch" class="markout-search-input"
+                                       t-att-value="state.query" t-att-disabled="state.busy"
+                                       t-on-input="queryChanged" t-on-keydown="onSearchKeydown"
+                                       placeholder="Search employee name or Badge ID..." autocomplete="off"/>
+                                <button class="markout-search-button btn" t-att-disabled="state.busy or state.searching"
+                                        t-on-click="searchEmployees">
+                                    <t t-if="state.searching"><i class="fa fa-spinner fa-spin" aria-hidden="true"/><span>Searching</span></t>
+                                    <t t-else="">Search</t>
+                                </button>
+                            </div>
+                            <div class="markout-results-meta" role="status" aria-live="polite">
+                                <span t-if="state.searching">Finding employees...</span>
+                                <span t-else=""><strong t-esc="state.employees.length"/> <t t-if="state.employees.length === 1">employee</t><t t-else="">employees</t></span>
+                            </div>
+                        </div>
+                        <div class="markout-table-wrap">
+                            <table class="markout-employees">
+                                <thead>
+                                    <tr><th scope="col">Employee</th><th scope="col">Badge ID</th><th scope="col">Department / Location</th><th scope="col">Work Contact</th><th scope="col"><span class="visually-hidden">Open register</span></th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="state.employees" t-as="employee" t-key="employee.id"
+                                        t-att-class="{'is-selected': state.selectedEmployee?.id === employee.id, 'is-unavailable': !employee.partner_id, 'is-busy': state.busy or state.searching}"
+                                        t-on-click="() => this.selectEmployee(employee)">
+                                        <td class="markout-employee-cell">
+                                            <div class="markout-employee-identity">
+                                                <span class="markout-avatar" aria-hidden="true" t-esc="employeeInitials(employee)"/>
+                                                <button class="markout-employee-name btn" t-att-disabled="state.busy or state.searching"
+                                                        t-on-click.stop="() => this.selectEmployee(employee)">
+                                                    <span t-esc="employee.name"/>
+                                                    <span t-if="state.selectedEmployee?.id === employee.id and state.busy" class="markout-opening-label" role="status">Opening register...</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td><span class="markout-mobile-label">Badge ID</span><span t-if="employee.badge" class="markout-badge" t-esc="employee.badge"/><span t-else="" class="markout-cell-muted">Not assigned</span></td>
+                                        <td>
+                                            <span class="markout-mobile-label">Department / Location</span>
+                                            <span class="markout-department" t-esc="employee.department || 'Not specified'"/>
+                                            <span t-if="employee.work_location" class="markout-location"><i class="fa fa-map-marker" aria-hidden="true"/><t t-esc="employee.work_location"/></span>
+                                        </td>
+                                        <td>
+                                            <span class="markout-mobile-label">Work Contact</span>
+                                            <span t-if="!employee.partner_id" class="markout-contact-missing"><i class="fa fa-exclamation-circle" aria-hidden="true"/>Contact required</span>
+                                            <span t-elif="employee.partner_name and employee.partner_name !== employee.name" class="markout-contact-name" t-esc="employee.partner_name"/>
+                                            <span t-else="" class="markout-contact-linked"><i class="fa fa-check-circle" aria-hidden="true"/>Linked contact</span>
+                                        </td>
+                                        <td class="markout-row-action">
+                                            <i t-if="state.selectedEmployee?.id === employee.id and state.busy" class="fa fa-spinner fa-spin" aria-hidden="true"/>
+                                            <i t-else="" class="fa fa-arrow-right" aria-hidden="true"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="!state.employees.length" class="markout-empty-row">
+                                        <td colspan="5">
+                                            <span class="markout-empty-icon"><i t-att-class="state.searching ? 'fa fa-spinner fa-spin' : 'fa fa-user-o'" aria-hidden="true"/></span>
+                                            <h3><t t-if="state.searching">Finding employees</t><t t-else="">No employees found</t></h3>
+                                            <p><t t-if="state.searching">Please wait a moment.</t><t t-else="">Try another name or Badge ID.</t></p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="pos_employee_benefits_markout.ProductScreenMarkout" t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('product-screen')]" position="before">
+            <div t-if="isMarkoutOrder" class="alert alert-info d-flex align-items-center justify-content-between mb-0 rounded-0">
+                <div>
+                    <strong>MARKED OUT — ZERO PAYMENT</strong>
+                    <span class="ms-2"><t t-esc="markoutContext.parentName"/> / <t t-esc="markoutContext.categoryName"/></span>
+                    <span class="ms-2">Employee: <t t-esc="markoutContext.employeeName"/></span>
+                </div>
+                <button class="btn btn-outline-danger" t-on-click="cancelMarkedOut">Cancel Marked Out</button>
+            </div>
+        </xpath>
+        <xpath expr="//ActionpadWidget" position="replace">
+            <ActionpadWidget partner="currentOrder?.getPartner()"
+                onClickMore.bind="displayAllControlPopup"
+                actionName="isMarkoutOrder ? 'Confirm Marked Out' : 'Payment'"
+                actionToTrigger="() => this.pos.pay()"
+                showActionButton="!currentOrder?.isEmpty()"
+                fastValidate="(paymentMethod) => this.fastValidate(paymentMethod)"/>
+        </xpath>
+        <xpath expr="//button[hasclass('pay-button')]/span[1]" position="replace">
+            <span class="d-block"><t t-if="isMarkoutOrder">Confirm Marked Out</t><t t-else="">Pay</t></span>
+        </xpath>
+        <xpath expr="//button[hasclass('pay-button')]/span[2]" position="replace">
+            <span t-esc="total"/>
+        </xpath>
+    </t>
+
+    <t t-name="pos_employee_benefits_markout.ControlButtonsMarkout" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//SelectPartnerButton" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and !props.showRemainingButtons</attribute>
+        </xpath>
+        <xpath expr="//InternalNoteButton" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and !props.showRemainingButtons</attribute>
+        </xpath>
+        <xpath expr="//button[@t-on-click='() =&gt; this.pos.selectPreset()']" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and pos.config.use_presets and !props.showRemainingButtons</attribute>
+        </xpath>
+        <xpath expr="//button[hasclass('more-btn')]" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and !props.showRemainingButtons and !this.pos.isSmallProductScreen and props.onClickMore</attribute>
+        </xpath>
+        <xpath expr="//NoteButton" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder</attribute>
+        </xpath>
+        <xpath expr="//button[@t-on-click='() =&gt; this.clickPricelist()']" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and this.pos.cashier._role != 'minimal'</attribute>
+        </xpath>
+        <xpath expr="//button[@t-on-click='() =&gt; this.clickRefund()']" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and this.pos.cashier._role != 'minimal'</attribute>
+        </xpath>
+        <xpath expr="//button[@t-on-click='() =&gt; this.clickFiscalPosition()']" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and this.pos.config.fiscal_position_ids.length and this.pos.cashier._role != 'minimal'</attribute>
+        </xpath>
+        <xpath expr="//button[contains(@t-on-click, 'onProductInfoClick')]" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder</attribute>
+        </xpath>
+        <xpath expr="//SelectPartnerButton" position="after">
+            <button t-if="markoutAccess.ready and markoutAccess.allowed and !isMarkoutOrder and !props.showRemainingButtons"
+                    class="btn btn-secondary pos-markout-icon" t-on-click="startMarkedOut"
+                    t-att-data-hotkey="this.pos.router.state.current === 'ProductScreen' ? 'm' : undefined"
+                    aria-keyshortcuts="Alt+M"
+                    title="Marked Out" aria-label="Marked Out">
+                <i class="fa fa-gift" aria-hidden="true"/>
+            </button>
+        </xpath>
+        <xpath expr="//NoteButton" position="before">
+            <button t-if="markoutAccess.ready and markoutAccess.allowed and !isMarkoutOrder"
+                    type="button" t-att-class="buttonClass" t-on-click="startMarkedOut"
+                    t-att-data-hotkey="this.pos.router.state.current === 'ProductScreen' ? 'm' : undefined"
+                    aria-keyshortcuts="Alt+M"
+                    title="Marked Out">
+                <i class="fa fa-gift me-1" aria-hidden="true"/>Marked Out
+            </button>
+        </xpath>
+        <xpath expr="//button[contains(@t-on-click, 'clickSaveOrder')]" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and !props.showRemainingButtons and !this.pos.isSmallProductScreen</attribute>
+        </xpath>
+        <xpath expr="//button[contains(@t-on-click, 'onCancelOrder')]" position="attributes">
+            <attribute name="t-if">!isMarkoutOrder and this.pos.cashier._role != 'minimal'</attribute>
+        </xpath>
+        <xpath expr="//button[contains(@t-on-click, 'onCancelOrder')]" position="after">
+            <button t-if="isMarkoutOrder and props.showRemainingButtons" t-att-class="buttonClass" t-on-click="cancelMarkedOut">
+                <i class="fa fa-times me-1" aria-hidden="true"/>Cancel Marked Out
+            </button>
+        </xpath>
+    </t>
+</templates>

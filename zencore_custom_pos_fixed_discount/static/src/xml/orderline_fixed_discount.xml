@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="custom_pos_fixed_discount.OrderlineFixedDiscount"
+       t-inherit="point_of_sale.Orderline"
+       t-inherit-mode="extension">
+        <xpath expr="//ul[contains(@class, 'info-list')]/li[contains(@class, 'price-per-unit')]" position="after">
+            <li t-if="line.fixedDiscountAmount">
+                Fixed Discount: <em><t t-esc="line.fixedDiscountAmount"/></em>
+            </li>
+        </xpath>
+    </t>
+</templates>

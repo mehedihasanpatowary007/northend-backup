@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Product variants and the company business timezone are admin-configured before activation. -->
+    <record id="benefit_daily_latte" model="pos.benefit.rule">
+        <field name="name">Daily Free Latte</field>
+        <field name="category_id" ref="category_staff_food_drink"/>
+        <field name="max_qty">1</field>
+        <field name="period">daily</field>
+        <field name="quota_scope">company</field>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

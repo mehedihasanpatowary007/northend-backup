@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_inline_form" model="ir.ui.view">
+        <field name="name">pos.config.inline.form</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='configuration']" position="inside">
+                <group string="Coffee order entry">
+                    <field name="ne_inline_enabled"/>
+                    <field name="ne_addon_limit" invisible="not ne_inline_enabled"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_addon_labels" model="ir.ui.view">
+        <field name="name">product.template.addon.labels</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="point_of_sale.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pos_optional_product_ids']" position="attributes">
+                <attribute name="string">Add-ons</attribute>
+                <attribute name="placeholder">Select add-on products</attribute>
+            </xpath>
+            <xpath expr="//group[@name='upsell_pos']" position="attributes">
+                <attribute name="string">Add-ons</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="pos_category_form_custom_hex_color" model="ir.ui.view">
+        <field name="name">pos.category.form.custom.hex.color</field>
+        <field name="model">pos.category</field>
+        <field name="inherit_id" ref="point_of_sale.product_pos_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='color']" position="attributes">
+                <attribute name="widget">pos_category_hex_color</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="pos_category_list_custom_hex_color" model="ir.ui.view">
+        <field name="name">pos.category.list.custom.hex.color</field>
+        <field name="model">pos.category</field>
+        <field name="inherit_id" ref="point_of_sale.product_pos_category_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='color']" position="attributes">
+                <attribute name="widget">pos_category_hex_color</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="pos_order_addon_details" model="ir.ui.view">
+        <field name="name">pos.order.addon.details</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']/list/field[@name='product_id']" position="after">
+                <field name="ne_parent_label" optional="show" readonly="1"/>
+                <field name="ne_parent_uuid" optional="hide" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

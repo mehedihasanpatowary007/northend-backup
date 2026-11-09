@@ -1,0 +1,99 @@
+.pos .pos-order-note-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pos .pos-order-note-button.is-icon-only,
+.pos .pos-customer-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    padding: 0 !important;
+    border-radius: 8px;
+    line-height: 1;
+
+    > .fa { font-size: 20px; }
+    &:focus-visible { outline: 2px solid var(--primary, #714b67); outline-offset: 2px; }
+}
+
+.pos .pos-order-note-button.has-order-note,
+.pos .pos-customer-icon.has-selected-customer {
+    color: var(--primary, var(--bs-primary, #{$o-brand-primary}));
+    border-color: currentColor;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+}
+
+.pos-order-note-title { display: block; margin-bottom: 4px; font-size: 12px; }
+.pos-order-note-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.pos .order-container .pos-order-note {
+    margin: 8px;
+    padding: 10px 12px;
+    color: var(--bs-body-color, #212529);
+    background: var(--bs-tertiary-bg, #f8f9fa);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-left: 3px solid var(--primary, var(--bs-primary, #{$o-brand-primary}));
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.pos-receipt .pos-order-note {
+    margin-top: 12px;
+    padding: 8px 0;
+    color: #111;
+    background: #fff;
+    border-top: 1px dashed #555;
+    border-bottom: 1px dashed #555;
+    font-size: 12px;
+    text-align: left;
+}
+
+.pos .ticket-screen .pos-ticket-order-note {
+    width: 22%;
+    min-width: 150px;
+    max-width: 260px;
+}
+
+.pos .ticket-screen .pos-ticket-order-note-label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.pos .ticket-screen .pos-ticket-order-note-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.pos .ticket-screen .pos-ticket-order-note-mobile {
+    width: 100%;
+    min-width: 0;
+    margin-top: 8px;
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.PaymentScreen" t-inherit-mode="extension">
+        <xpath expr="//Numpad" position="before">
+            <div class="ne-payment-cash-shortcuts" role="group" aria-label="Quick payment amounts">
+                <button type="button" class="numpad-button position-relative btn btn-secondary o_colorlist_item_numpad_color_10"
+                        t-on-click="() => this.addQuickCashAmount(100)">+100</button>
+                <button type="button" class="numpad-button position-relative btn btn-secondary o_colorlist_item_numpad_color_10"
+                        t-on-click="() => this.addQuickCashAmount(500)">+500</button>
+                <button type="button" class="numpad-button position-relative btn btn-secondary o_colorlist_item_numpad_color_10"
+                        t-on-click="() => this.addQuickCashAmount(1000)">+1000</button>
+            </div>
+        </xpath>
+        <xpath expr="//Numpad" position="attributes">
+            <attribute name="class">'mt-1'</attribute>
+        </xpath>
+    </t>
+</templates>

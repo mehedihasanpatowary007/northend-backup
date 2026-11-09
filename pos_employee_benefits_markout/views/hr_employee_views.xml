@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_pos_benefit_rules" model="ir.ui.view">
+        <field name="name">hr.employee.pos.benefit.rules</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="pos_benefits" string="POS Benefits" groups="hr.group_hr_manager,point_of_sale.group_pos_manager">
+                    <field name="company_id" invisible="1"/>
+                    <p class="text-muted">Configure which Marked Out category and products this employee may use, and the quantity allowed each business day. Products in one rule share its Daily Quantity; add separate rules for independent allowances. Shared defaults remain available under Point of Sale / Marked Out / Setup / Benefit Rules.</p>
+                    <field name="pos_benefit_rule_ids" nolabel="1"
+                           context="{'default_employee_id': id, 'default_company_id': company_id}">
+                        <list editable="bottom">
+                            <field name="name" string="Benefit" placeholder="e.g. Daily coffee"/>
+                            <field name="employee_id" column_invisible="True"/>
+                            <field name="company_id" column_invisible="True"/>
+                            <field name="category_id" options="{'no_create': True}"
+                                   domain="[('parent_id', '!=', False), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                            <field name="product_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   domain="[('available_in_pos', '=', True), ('sale_ok', '=', True)]"/>
+                            <field name="max_qty"/>
+                            <field name="quota_scope" optional="show"/>
+                            <field name="timezone" optional="show"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

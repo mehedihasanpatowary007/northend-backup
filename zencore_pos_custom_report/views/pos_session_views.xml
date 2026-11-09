@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit POS Session Form view to add 3 report action buttons in the header -->
+    <record id="view_pos_session_form_inherit_custom_reports" model="ir.ui.view">
+        <field name="name">pos.session.form.inherit.custom.reports</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_waiter_cashier_report" type="object" string="Waiter Cashier Report" class="btn btn-secondary"/>
+                <button name="action_open_items_sales_report" type="object" string="Items Sales Report" class="btn btn-secondary"/>
+                <button name="action_open_work_period_sales_summary" type="object" string="Work Period Sales Summary" class="btn btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

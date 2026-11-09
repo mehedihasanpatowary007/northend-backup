@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_benefit_rule_list" model="ir.ui.view">
+        <field name="name">pos.benefit.rule.list</field>
+        <field name="model">pos.benefit.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="employee_id" string="Employee (blank = default)"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="category_id"/>
+                <field name="product_ids" widget="many2many_tags"/>
+                <field name="max_qty"/>
+                <field name="quota_scope"/>
+                <field name="timezone"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    <record id="pos_benefit_rule_form" model="ir.ui.view">
+        <field name="name">pos.benefit.rule.form</field>
+        <field name="model">pos.benefit.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="employee_id" placeholder="All employees (default)" options="{'no_create': True}"/>
+                            <field name="category_id" domain="[('parent_id', '!=', False)]"/>
+                            <field name="product_ids" widget="many2many_tags" domain="[('available_in_pos', '=', True), ('sale_ok', '=', True)]"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="max_qty"/>
+                            <field name="period"/>
+                            <field name="quota_scope"/>
+                            <field name="timezone" placeholder="Asia/Dhaka"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">Leave Employee empty for a shared default allowance. An employee-specific rule overrides that default for its selected products. Daily Quantity is shared across the products in this rule; create separate rules for independent product limits. All products used in a staff-benefit category must have an applicable active rule.</div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="pos_benefit_rule_action" model="ir.actions.act_window">
+        <field name="name">Employee Benefit Rules</field>
+        <field name="res_model">pos.benefit.rule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

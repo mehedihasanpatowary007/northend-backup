@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_pos_markout" model="ir.sequence">
+        <field name="name">POS Marked Out</field>
+        <field name="code">pos.markout</field>
+        <field name="prefix">MO/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="category_staff" model="pos.markout.category">
+        <field name="name">Employee / Staff Benefit</field>
+        <field name="icon">fa-users</field>
+        <field name="code">staff</field>
+        <field name="sequence">10</field>
+        <field name="stock_policy">unconfigured</field>
+    </record>
+    <record id="category_cafe" model="pos.markout.category">
+        <field name="name">Cafe Usages</field>
+        <field name="icon">fa-coffee</field>
+        <field name="code">cafe</field>
+        <field name="sequence">20</field>
+        <field name="stock_policy">unconfigured</field>
+    </record>
+    <record id="category_corporate" model="pos.markout.category">
+        <field name="name">Corporate Usage</field>
+        <field name="icon">fa-building-o</field>
+        <field name="code">corporate</field>
+        <field name="sequence">30</field>
+        <field name="stock_policy">unconfigured</field>
+    </record>
+
+    <record id="category_staff_food_drink" model="pos.markout.category">
+        <field name="name">Food &amp; Drink Benefit For Staff</field>
+        <field name="code">staff.food_drink</field>
+        <field name="parent_id" ref="category_staff"/>
+        <field name="sequence">10</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+    <record id="category_cafe_expired_damage" model="pos.markout.category">
+        <field name="name">Expired / Damage</field>
+        <field name="code">cafe.expired_damage</field>
+        <field name="parent_id" ref="category_cafe"/>
+        <field name="sequence">10</field>
+        <field name="stock_policy">unconfigured</field>
+    </record>
+    <record id="category_cafe_returned_wrong" model="pos.markout.category">
+        <field name="name">Returned / Wrong Orders</field>
+        <field name="code">cafe.returned_wrong</field>
+        <field name="parent_id" ref="category_cafe"/>
+        <field name="sequence">20</field>
+        <field name="stock_policy">unconfigured</field>
+    </record>
+    <record id="category_cafe_customer_feedback" model="pos.markout.category">
+        <field name="name">Customer Feedback</field>
+        <field name="code">cafe.customer_feedback</field>
+        <field name="parent_id" ref="category_cafe"/>
+        <field name="sequence">30</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+    <record id="category_cafe_training" model="pos.markout.category">
+        <field name="name">Training</field>
+        <field name="code">cafe.training</field>
+        <field name="parent_id" ref="category_cafe"/>
+        <field name="sequence">40</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+    <record id="category_corporate_guests" model="pos.markout.category">
+        <field name="name">Corporate Guests</field>
+        <field name="code">corp.guests</field>
+        <field name="parent_id" ref="category_corporate"/>
+        <field name="sequence">10</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+    <record id="category_corporate_customers" model="pos.markout.category">
+        <field name="name">Corporate Customers</field>
+        <field name="code">corp.customers</field>
+        <field name="parent_id" ref="category_corporate"/>
+        <field name="sequence">20</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+    <record id="category_corporate_vendors" model="pos.markout.category">
+        <field name="name">Vendor / Suppliers</field>
+        <field name="code">corp.vendors</field>
+        <field name="parent_id" ref="category_corporate"/>
+        <field name="sequence">30</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+    <record id="category_corporate_development" model="pos.markout.category">
+        <field name="name">Development / Testing</field>
+        <field name="code">corp.development</field>
+        <field name="parent_id" ref="category_corporate"/>
+        <field name="sequence">40</field>
+        <field name="stock_policy">prepare</field>
+    </record>
+</odoo>

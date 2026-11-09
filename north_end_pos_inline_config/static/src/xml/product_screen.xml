@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="north_end_pos_inline_config.ProductScreen" t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('product-screen')]" position="attributes">
+            <attribute name="t-att-class">{'ne-inline': pos.config.ne_inline_enabled}</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('rightpane')]/div[hasclass('position-relative')]" position="attributes">
+            <attribute name="class" add="ne-product-workspace" separator=" "/>
+        </xpath>
+        <xpath expr="//CategorySelector" position="replace">
+            <VerticalCategories t-if="pos.config.ne_inline_enabled"/>
+            <t t-else="">
+                <CategorySelector t-if="pos.productsToDisplay.length > 0 and (!pos.isSmallProductScreen || !pos.scanning)"/>
+            </t>
+        </xpath>
+        <xpath expr="//div[hasclass('rightpane')]/div[hasclass('position-relative')]" position="inside">
+            <InlineEditor t-if="pos.config.ne_inline_enabled and !pos.scanning"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_nocontent_help')]" position="replace">
+            <div class="o_nocontent_help">
+                <p class="o_nocontent_smiling_face">No products available</p>
+                <p>Configure products for this point of sale to start taking orders.</p>
+            </div>
+        </xpath>
+    </t>
+    <t t-name="north_end_pos_inline_config.VerticalCategories">
+        <nav class="ne-categories p-2" aria-label="Product categories">
+            <button class="btn btn-light ne-category" t-att-class="{'active': getAllSelected()}"
+                t-att-aria-pressed="getAllSelected() ? 'true' : 'false'" t-on-click="() => pos.setSelectedCategory(0)">
+                <i class="fa fa-th-large me-1"/> All products
+            </button>
+            <button t-foreach="getCategoriesAndSub()" t-as="category" t-key="category.id"
+                class="btn btn-light ne-category"
+                t-attf-class="{{ category.color >= 16777216 ? '' : 'o_colorlist_item_color_' + (category.color || 'none') }}"
+                t-att-class="{'active': category.isSelected, 'ne-subcategory': category.isChildren and pos.selectedCategory}"
+                t-att-style="this.posCategoryColorStyle(category)"
+                t-att-aria-pressed="category.isSelected ? 'true' : 'false'" t-att-title="categoryPath(category.id)"
+                t-on-click="() => pos.setSelectedCategory(category.id)">
+                <img t-if="showCategoryImg(category)" t-att-src="category.imgSrc" alt=""/>
+                <span t-esc="category.name"/>
+            </button>
+        </nav>
+    </t>
+    <t t-name="north_end_pos_inline_config.CategorySelectorCustomHexColor" t-inherit="point_of_sale.CategorySelector" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('category-button')]" position="attributes">
+            <attribute name="t-attf-class">{{ category.color >= 16777216 ? '' : 'o_colorlist_item_color_' + (category.color || 'none') }}</attribute>
+            <attribute name="t-att-style">this.posCategoryColorStyle(category)</attribute>
+        </xpath>
+    </t>
+    <t t-name="north_end_pos_inline_config.InlineEditor">
+        <section t-if="visible" class="ne-inline-editor bg-view border-top p-3" aria-label="Selected item options"
+            t-att-aria-busy="isBusy ? 'true' : 'false'">
+            <header class="ne-editor-header d-flex justify-content-between align-items-center gap-2">
+                <div>
+                    <strong class="ne-editor-product" t-esc="line.full_product_name"/>
+                    <span class="ne-editor-qty ms-2">Qty <t t-esc="line.qty"/></span>
+                </div>
+                <strong class="ne-editor-total text-nowrap" t-esc="amount(line.neGroupTotal())"/>
+            </header>
+            <section t-if="attributes.length" class="ne-variant-section" aria-label="Product attributes">
+                <h6 class="ne-section-heading"><span>Variant</span><small><t t-if="state.refreshing">Loading options...</t><t t-else="">Select options for this item</t></small></h6>
+                <div class="ne-attribute-grid">
+                    <div t-foreach="attributes" t-as="attribute" t-key="attribute.id" class="ne-attribute-card"
+                        role="group" t-att-aria-labelledby="'ne-attribute-title-' + attribute.id">
+                        <div class="ne-attribute-name" t-att-id="'ne-attribute-title-' + attribute.id"
+                            t-esc="attribute.attribute_id.name"/>
+                        <div class="ne-attribute-values" role="group" t-att-aria-label="attribute.attribute_id.name">
+                            <t t-foreach="valuesForAttribute(attribute)" t-as="value" t-key="value.id">
+                                <button class="btn ne-variant" t-att-class="isSelected(value) ? 'btn-primary' : 'btn-outline-secondary'"
+                                    t-att-disabled="isBusy or !isAvailable(value)"
+                                    t-att-aria-pressed="isSelected(value) ? 'true' : 'false'"
+                                    t-on-click="() => this.changeAttribute(value)"><t t-esc="value.name"/></button>
+                                <input t-if="value.is_custom and isSelected(value)" class="form-control ne-custom-value"
+                                    t-att-aria-label="value.name" t-att-value="customValue(value)" t-att-disabled="isBusy"
+                                    t-on-change="(event) => this.changeAttribute(value, event.target.value)"/>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                <div t-if="line.qty > 1" class="ne-variant-hint">
+                    Changing an option moves one cup. Existing add-ons stay with the remaining cups.
+                </div>
+            </section>
+            <section t-if="addonRows.length" class="ne-addons-section" aria-label="Add-ons">
+                <h6 class="ne-section-heading"><span>Add-ons</span><small>Portions for this line · coffee quantity does not change these counts</small></h6>
+                <div class="ne-addon-grid">
+                    <article t-foreach="addonRows" t-as="row" t-key="row.key" class="ne-addon-option">
+                        <div class="ne-addon-name">
+                            <span class="ne-addon-title" t-esc="row.name"/>
+                            <small class="ne-addon-price" t-esc="addonPrice(row)"/>
+                        </div>
+                        <div class="ne-stepper" role="group" t-att-aria-label="row.name">
+                            <button class="btn ne-stepper-minus" t-att-disabled="isBusy or addonQty(row) &lt;= 0"
+                                t-att-title="'Remove one ' + row.name" t-att-aria-label="'Remove one ' + row.name"
+                                t-on-click="() => this.changeAddon(row, -1)">−</button>
+                            <output aria-live="polite" t-esc="addonQty(row)"/>
+                            <button class="btn ne-stepper-plus" t-att-disabled="isBusy or atLimit(row)"
+                                t-att-title="'Add one ' + row.name" t-att-aria-label="'Add one ' + row.name"
+                                t-on-click="() => this.changeAddon(row, 1)">+</button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </section>
+    </t>
+</templates>

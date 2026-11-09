@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="north_end_pos_inline_config.PosCategoryHexColorField">
+        <t t-if="props.readonly">
+            <span t-if="hexColor" class="o_colorlist_item_color_0 rounded-circle d-inline-block border"
+                t-att-style="'width: 22px; height: 22px; ' + customColorStyle" t-att-title="hexColor"/>
+            <span t-else="" t-attf-class="o_colorlist_item_color_{{ selectedPaletteColor }} rounded-circle d-inline-block border"
+                style="width: 22px; height: 22px;"/>
+        </t>
+        <div t-else="" class="d-flex flex-wrap align-items-center gap-3">
+            <ColorList colors="colors" forceExpanded="true"
+                onColorSelected.bind="onPaletteColorSelected" selectedColor="selectedPaletteColor"/>
+            <div class="d-flex align-items-center gap-2">
+                <input type="color" class="form-control form-control-color form-control-sm"
+                    t-att-value="pickerColor" t-att-disabled="props.readonly"
+                    title="Choose a HEX color" t-on-change="onHexPickerChange"/>
+                <input type="text" class="form-control form-control-sm font-monospace"
+                    style="width: 112px;" placeholder="#RRGGBB" maxlength="7"
+                    t-att-value="hexColor" t-att-disabled="props.readonly"
+                    title="Enter a six-digit HEX color" t-on-change="onHexTextChange"/>
+            </div>
+        </div>
+    </t>
+</templates>
