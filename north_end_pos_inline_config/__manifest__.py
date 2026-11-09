@@ -1,6 +1,6 @@
 {
     'name': 'North End POS Inline Configuration',
-    'version': '19.0.1.0.17',
+    'version': '19.0.1.0.0',
     'category': 'Sales/Point of Sale',
     'summary': 'Inline variants, vertical categories and independently counted add-ons',
     'author': 'ZenCore',
